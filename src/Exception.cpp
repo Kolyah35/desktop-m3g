@@ -4,198 +4,154 @@
 using namespace m3g;
 using namespace std;
 
-
 #define BUF_SIZE 1024
 
-ArithmeticException:: ArithmeticException (const char* file, const char* func, const char* format, ...)
-{
+ArithmeticException::ArithmeticException(const char* file, const char* func, const char* format, ...) {
     char buf[BUF_SIZE];
     va_list args;
-    va_start (args, format);
-    vsnprintf (buf, BUF_SIZE, format, args);
-    va_end (args);
+    va_start(args, format);
+    vsnprintf(buf, BUF_SIZE, format, args);
+    va_end(args);
     msg = string(file) + ":" + string(func) + " " + string(buf);
 }
 
-ArithmeticException:: ~ArithmeticException () throw()
-{
+ArithmeticException::~ArithmeticException() throw() {}
+
+const char* ArithmeticException::what() const throw() {
+    return msg.c_str();
 }
 
-const char* ArithmeticException:: what () const throw()
-{
-  return msg.c_str();
-}
-
-
-IllegalArgumentException:: IllegalArgumentException (const char* file, const char* func, const char* format, ...)
-{
+IllegalArgumentException::IllegalArgumentException(const char* file, const char* func, const char* format, ...) {
     char buf[BUF_SIZE];
     va_list args;
-    va_start (args, format);
-    vsnprintf (buf, BUF_SIZE, format, args);
-    va_end (args);
+    va_start(args, format);
+    vsnprintf(buf, BUF_SIZE, format, args);
+    va_end(args);
     msg = string(file) + ":" + string(func) + " " + string(buf);
 }
 
-IllegalArgumentException:: ~IllegalArgumentException () throw()
-{
+IllegalArgumentException::~IllegalArgumentException() throw() {}
+
+const char* IllegalArgumentException::what() const throw() {
+    return msg.c_str();
 }
 
-const char* IllegalArgumentException:: what () const throw()
-{
-  return msg.c_str();
-}
-
-
-IllegalStateException:: IllegalStateException (const char* file, const char* func, const char* format, ...)
-{
+IllegalStateException::IllegalStateException(const char* file, const char* func, const char* format, ...) {
     char buf[BUF_SIZE];
     va_list args;
-    va_start (args, format);
-    vsnprintf (buf, BUF_SIZE, format, args);
-    va_end (args);
+    va_start(args, format);
+    vsnprintf(buf, BUF_SIZE, format, args);
+    va_end(args);
     msg = string(file) + ":" + string(func) + " " + string(buf);
 }
 
-IllegalStateException:: ~IllegalStateException () throw()
-{
+IllegalStateException::~IllegalStateException() throw() {}
+
+const char* IllegalStateException::what() const throw() {
+    return msg.c_str();
 }
 
-const char* IllegalStateException:: what () const throw()
-{
-  return msg.c_str();
-}
-
-IndexOutOfBoundsException:: IndexOutOfBoundsException (const char* file, const char* func, const char* format, ...)
-{
+IndexOutOfBoundsException::IndexOutOfBoundsException(const char* file, const char* func, const char* format, ...) {
     char buf[BUF_SIZE];
     va_list args;
-    va_start (args, format);
-    vsnprintf (buf, BUF_SIZE, format, args);
-    va_end (args);
+    va_start(args, format);
+    vsnprintf(buf, BUF_SIZE, format, args);
+    va_end(args);
     msg = string(file) + ":" + string(func) + " " + string(buf);
 }
 
-IndexOutOfBoundsException:: ~IndexOutOfBoundsException () throw()
-{
+IndexOutOfBoundsException::~IndexOutOfBoundsException() throw() {}
+
+const char* IndexOutOfBoundsException::what() const throw() {
+    return msg.c_str();
 }
 
-const char* IndexOutOfBoundsException:: what () const throw()
-{
-  return msg.c_str();
-}
-
-IOException:: IOException (const char* file, const char* func, const char* format, ...)
-{
+IOException::IOException(const char* file, const char* func, const char* format, ...) {
     char buf[BUF_SIZE];
     va_list args;
-    va_start (args, format);
-    vsnprintf (buf, BUF_SIZE, format, args);
-    va_end (args);
+    va_start(args, format);
+    vsnprintf(buf, BUF_SIZE, format, args);
+    va_end(args);
     msg = string(file) + ":" + string(func) + " " + string(buf);
 }
 
-IOException:: ~IOException () throw()
-{
+IOException::~IOException() throw() {}
+
+const char* IOException::what() const throw() {
+    return msg.c_str();
 }
 
-
-const char* IOException:: what () const throw()
-{
-  return msg.c_str();
-}
-
-NullPointerException:: NullPointerException (const char* file, const char* func, const char* format, ...)
-{
+NullPointerException::NullPointerException(const char* file, const char* func, const char* format, ...) {
     char buf[BUF_SIZE];
     va_list args;
-    va_start (args, format);
-    vsnprintf (buf, BUF_SIZE, format, args);
-    va_end (args);
+    va_start(args, format);
+    vsnprintf(buf, BUF_SIZE, format, args);
+    va_end(args);
     msg = string(file) + ":" + string(func) + " " + string(buf);
 }
 
-NullPointerException:: ~NullPointerException () throw()
-{
+NullPointerException::~NullPointerException() throw() {}
+
+const char* NullPointerException::what() const throw() {
+    return msg.c_str();
 }
 
-const char* NullPointerException:: what () const throw()
-{
-  return msg.c_str();
-}
-
-SecurityException:: SecurityException (const char* file, const char* func, const char* format, ...)
-{
+SecurityException::SecurityException(const char* file, const char* func, const char* format, ...) {
     char buf[BUF_SIZE];
     va_list args;
-    va_start (args, format);
-    vsnprintf (buf, BUF_SIZE, format, args);
-    va_end (args);
+    va_start(args, format);
+    vsnprintf(buf, BUF_SIZE, format, args);
+    va_end(args);
     msg = string(file) + ":" + string(func) + " " + string(buf);
 }
 
-SecurityException:: ~SecurityException () throw()
-{
+SecurityException::~SecurityException() throw() {}
+
+const char* SecurityException::what() const throw() {
+    return msg.c_str();
 }
 
-const char* SecurityException:: what () const throw()
-{
-  return msg.c_str();
-}
-
-NotImplementedException:: NotImplementedException (const char* file, const char* func, const char* format, ...)
-{
+NotImplementedException::NotImplementedException(const char* file, const char* func, const char* format, ...) {
     char buf[BUF_SIZE];
     va_list args;
-    va_start (args, format);
-    vsnprintf (buf, BUF_SIZE, format, args);
-    va_end (args);
+    va_start(args, format);
+    vsnprintf(buf, BUF_SIZE, format, args);
+    va_end(args);
     msg = string(file) + ":" + string(func) + " " + string(buf);
 }
 
-NotImplementedException:: ~NotImplementedException () throw()
-{
+NotImplementedException::~NotImplementedException() throw() {}
+
+const char* NotImplementedException::what() const throw() {
+    return msg.c_str();
 }
 
-const char* NotImplementedException:: what () const throw()
-{
-  return msg.c_str();
-}
-
-OpenGLException:: OpenGLException (const char* file, const char* func, const char* format, ...)
-{
+OpenGLException::OpenGLException(const char* file, const char* func, const char* format, ...) {
     char buf[BUF_SIZE];
     va_list args;
-    va_start (args, format);
-    vsnprintf (buf, BUF_SIZE, format, args);
-    va_end (args);
+    va_start(args, format);
+    vsnprintf(buf, BUF_SIZE, format, args);
+    va_end(args);
     msg = string(file) + ":" + string(func) + " " + string(buf);
 }
 
-OpenGLException:: ~OpenGLException () throw()
-{
+OpenGLException::~OpenGLException() throw() {}
+
+const char* OpenGLException::what() const throw() {
+    return msg.c_str();
 }
 
-const char* OpenGLException:: what () const throw()
-{
-  return msg.c_str();
-}
-
-InternalException:: InternalException (const char* file, const char* func, const char* format, ...)
-{
+InternalException::InternalException(const char* file, const char* func, const char* format, ...) {
     char buf[BUF_SIZE];
     va_list args;
-    va_start (args, format);
-    vsnprintf (buf, BUF_SIZE, format, args);
-    va_end (args);
+    va_start(args, format);
+    vsnprintf(buf, BUF_SIZE, format, args);
+    va_end(args);
     msg = string(file) + ":" + string(func) + " " + string(buf);
 }
 
-InternalException:: ~InternalException () throw()
-{
-}
+InternalException::~InternalException() throw() {}
 
-const char* InternalException:: what () const throw()
-{
-  return msg.c_str();
+const char* InternalException::what() const throw() {
+    return msg.c_str();
 }

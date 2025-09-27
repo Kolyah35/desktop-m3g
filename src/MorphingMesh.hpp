@@ -4,7 +4,6 @@
 #include "m3g/Mesh.hpp"
 #include <iosfwd>
 
-
 namespace m3g {
 
     class VertexBuffer;
@@ -16,8 +15,7 @@ namespace m3g {
      * @~English  A scene graph node that represents a vertex morphing polygon mesh.
      * @~Japanese モーフィングメッシュを表すシーングラフのノード.
      */
-    class MorphingMesh : public Mesh
-    {
+    class MorphingMesh : public Mesh {
     public:
         /**
          * @~English  Construct a new MorphingMesh with the given base mesh and morph targets.
@@ -30,13 +28,7 @@ namespace m3g {
          * @param[in] num_appearance  アピアランスの配列の個数.
          * @param[in] appearances     アピアランスの配列.
          */
-        MorphingMesh (VertexBuffer*  base          ,
-                      int            num_targets   ,
-                      VertexBuffer** targets       ,
-                      int            num_submesh   ,
-                      IndexBuffer**  submeshes     ,
-                      int            num_appearance,
-                      Appearance**   appearances   );
+        MorphingMesh(VertexBuffer* base, int num_targets, VertexBuffer** targets, int num_submesh, IndexBuffer** submeshes, int num_appearance, Appearance** appearances);
 
         /**
          * @~English  Constructs a new MorphingMesh with the given base mesh and morph targets.
@@ -46,26 +38,20 @@ namespace m3g {
          * @param[in] submesh       頂点インデックス.
          * @param[in] appearance    アピアランス.
          */
-        MorphingMesh (VertexBuffer*  base       , 
-                      int            num_targets, 
-                      VertexBuffer** targets    ,
-                      IndexBuffer*   submesh    ,
-                      Appearance*    appearance  );
+        MorphingMesh(VertexBuffer* base, int num_targets, VertexBuffer** targets, IndexBuffer* submesh, Appearance* appearance);
 
         /**
          * @~English  Destruct this object.
          * @~Japanese このオブジェクトを削除するデストラクタ.
          */
-        virtual ~MorphingMesh ();
+        virtual ~MorphingMesh();
 
         /**
-         * @~English  Creates a duplicate of this Object3D. 
+         * @~English  Creates a duplicate of this Object3D.
          * @~Japanese このオブジェクトの複製の作成.
          * @return 複製したMorphingMeshオブジェクト.
          */
-        MorphingMesh* duplicate () const;
-
-
+        MorphingMesh* duplicate() const;
 
         /**
          * @~English  Returns the morph target VertxBuffer at the given index.
@@ -73,21 +59,21 @@ namespace m3g {
          * @param[in] index  サブメッシュ番号.
          * @return  サブメッシュ番号で指定された頂点インデックスバッファー.
          */
-        VertexBuffer* getMorphTarget (int index) const;
+        VertexBuffer* getMorphTarget(int index) const;
 
         /**
          * @~English  Returns the number of morph targets in this MorphingMesh.
          * @~Japanese このモーフィングメッシュのモーフターゲット数の取得.
          ＊@return  ターゲット数.
          */
-        int getMorphTargetCount () const;
+        int getMorphTargetCount() const;
 
         /**
          * @~English  Gets the current morph target weights for this mesh.
          * @~Japanese このメッシュのカレントのモーフターゲットのウェイトの取得.
          * @param[out] weights  結果を書き込むウェイト値の配列.
          */
-        void getWeights (float* weights) const;
+        void getWeights(float* weights) const;
 
         /**
          * @~English  Sets the weights for all morph targets in this mesh.
@@ -95,77 +81,69 @@ namespace m3g {
          * param[in] num_weights  ウェイト値の配列の総数.
          * param[in] weights      ウェイト値の配列.
          */
-        void setWeights (int num_weights, float* weights);
+        void setWeights(int num_weights, float* weights);
 
         /**
          * @~English  Print out information of this object.
          * @~Japanese このオブジェクトの情報を表示。デバッグ用.
          * @param[in] out  表示先のストリーム
          */
-        virtual std::ostream& print (std::ostream& out) const;
-
+        virtual std::ostream& print(std::ostream& out) const;
 
     protected:
         /**
-         * @~English  
-         * @~Japanese 
+         * @~English
+         * @~Japanese
          */
-        virtual void addAnimationTrack_xxx (AnimationTrack* animation_track, bool accepted);
+        virtual void addAnimationTrack_xxx(AnimationTrack* animation_track, bool accepted);
 
         /**
-         * @~English  
-         * @~Japanese 
+         * @~English
+         * @~Japanese
          */
-        virtual int animate_xxx (int world_time);
+        virtual int animate_xxx(int world_time);
 
         /**
-         * @~English  
-         * @~Japanese 
+         * @~English
+         * @~Japanese
          */
-        virtual MorphingMesh* duplicate_xxx (Object3D* obj) const;
+        virtual MorphingMesh* duplicate_xxx(Object3D* obj) const;
 
         /**
-         * @~English  
-         * @~Japanese 
+         * @~English
+         * @~Japanese
          */
-        virtual int getReferences_xxx (Object3D** references) const;
+        virtual int getReferences_xxx(Object3D** references) const;
 
         /**
-         * @~English  
-         * @~Japanese 
+         * @~English
+         * @~Japanese
          */
-        virtual void render_xxx (RenderState& state) const;
+        virtual void render_xxx(RenderState& state) const;
 
     private:
-
-        MorphingMesh (const MorphingMesh& mesh);
-        MorphingMesh& operator= (const MorphingMesh& mesh);
-
+        MorphingMesh(const MorphingMesh& mesh);
+        MorphingMesh& operator=(const MorphingMesh& mesh);
 
         /**
          * @~English  Morph skin, inner use.
          * @~Japanese スキンを変形させる内部使用の関数.
          */
-        void updateMorphedVertices ();
+        void updateMorphedVertices();
 
         /**
          * @~Japanesse  共通初期化処理.
          */
-        void initialize (int num_targets, VertexBuffer** targets);
-
+        void initialize(int num_targets, VertexBuffer** targets);
 
     private:
-
-        VertexBuffer*              morphed_vertices;
+        VertexBuffer* morphed_vertices;
         std::vector<VertexBuffer*> morph_targets;
-        std::vector<float>         morph_weights;
-    
+        std::vector<float> morph_weights;
     };
 
-} // namespace m3g {
+} // namespace m3g
 
-std::ostream& operator<< (std::ostream& out, const m3g::MorphingMesh& m);
-
-
+std::ostream& operator<<(std::ostream& out, const m3g::MorphingMesh& m);
 
 #endif

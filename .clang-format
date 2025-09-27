@@ -1,0 +1,78 @@
+# https://clang.llvm.org/docs/ClangFormatStyleOptions.html
+SpacesBeforeTrailingComments: 1
+AlignConsecutiveMacros: Consecutive
+# AlignEscapedNewlines: LeftWithLastLine
+AlignOperands: Align
+AlignTrailingComments:
+  Kind: Always
+AllowShortLambdasOnASingleLine: Empty
+IndentWidth: 4
+ColumnLimit: 180
+UseTab: Never
+AllowShortIfStatementsOnASingleLine: Never
+UseCRLF: false
+AlignArrayOfStructures: None
+AllowShortBlocksOnASingleLine: Empty
+AllowShortCaseLabelsOnASingleLine: true
+AllowShortEnumsOnASingleLine: false
+AllowShortFunctionsOnASingleLine: Inline
+AlwaysBreakTemplateDeclarations: Yes
+PointerAlignment: Left
+QualifierAlignment: Left
+ReferenceAlignment: Left
+SpaceAroundPointerQualifiers: Before
+SpaceBeforeCaseColon: false
+SpaceBeforeCpp11BracedList: true
+SpaceBeforeCtorInitializerColon: true
+SpaceBeforeInheritanceColon: true
+SpaceBeforeRangeBasedForLoopColon: true
+SpaceBeforeSquareBrackets: false
+SpaceInEmptyBlock: false
+SpaceInEmptyParentheses: false
+SpacesInAngles: Never
+SpacesInCStyleCastParentheses: false
+SpacesInConditionalStatement: false
+SpacesInContainerLiterals: false
+NamespaceIndentation: All
+SortIncludes: Never
+AlwaysBreakBeforeMultilineStrings: false
+BinPackArguments: true
+BitFieldColonSpacing: Both
+BraceWrapping:
+  AfterCaseLabel: false
+  AfterClass: false
+  AfterControlStatement: MultiLine
+  AfterEnum: false
+  AfterFunction: false
+  AfterNamespace: false
+  AfterStruct: false
+  AfterUnion: false
+  AfterExternBlock: false
+  BeforeCatch: false
+  BeforeElse: false
+  BeforeLambdaBody: false
+BreakAdjacentStringLiterals: true
+BreakArrays: false
+BreakStringLiterals: true
+EmptyLineAfterAccessModifier: Never
+EmptyLineBeforeAccessModifier: LogicalBlock
+IndentAccessModifiers: false
+IndentPPDirectives: BeforeHash
+InsertBraces: true
+KeepEmptyLines: # ?
+  AtEndOfFile: false
+  AtStartOfBlock: false
+  AtStartOfFile: false
+LineEnding: LF
+PPIndentWidth: 4
+PackConstructorInitializers: BinPack
+RemoveBracesLLVM: false
+RemoveEmptyLinesInUnwrappedLines: true # ?
+RemoveParentheses: MultipleParentheses
+RemoveSemicolon: true
+# SeparateDefinitionBlocks: Always # dont use
+SpaceAfterCStyleCast: false
+SpaceAfterLogicalNot: false
+SpaceAfterTemplateKeyword: false
+AccessModifierOffset: -4
+IndentCaseLabels: true

@@ -1,7 +1,6 @@
 #ifndef __M3G_VERTEX_BUFFER_HPP__
 #define __M3G_VERTEX_BUFFER_HPP__
 
-
 #include "m3g/Object3D.hpp"
 #include "m3g/m3gdef.hpp"
 #include <iosfwd>
@@ -11,34 +10,32 @@ namespace m3g {
     class VertexArray;
 
     /**
-     * @~English  VertexBuffer holds references to VertexArrays that 
-     *            contain the positions, colors, normals, and 
+     * @~English  VertexBuffer holds references to VertexArrays that
+     *            contain the positions, colors, normals, and
      *            texture coordinates for a set of vertices.
      * @~Japanese VertexBufferは頂点位置、法線、色、テクスチャー座標を保持する
      *            VertexArrayへのポインターを持つホルダークラス.
      */
-    class VertexBuffer : public Object3D
-    {
-
+    class VertexBuffer : public Object3D {
     public:
         /**
          * @~English  Creates an empty VertexBuffer with default values.
          * @~Japanese デフォルトの値のVertexBufferオブジェクトを作成.
          */
-        VertexBuffer ();
+        VertexBuffer();
 
         /**
          * @~English  Destructs this object.
          * @~Japanese このオブジェクトを削除するデストラクタ.
          */
-        virtual ~VertexBuffer ();
+        virtual ~VertexBuffer();
 
         /**
-         * @~English  Creates a duplicate of this Object3D. 
+         * @~English  Creates a duplicate of this Object3D.
          * @~Japanese このオブジェクトの複製の作成.
          * @return 複製されたVertexBufferオブジェクト.
          */
-        VertexBuffer* duplicate () const;
+        VertexBuffer* duplicate() const;
 
         /**
          * @~English  Gets the current color array.
@@ -46,14 +43,14 @@ namespace m3g {
          * @param[out] scale_bias カラー配列に設定されたscale, bias値を書き込む領域.
          * @return カラー配列を持ったVertexArrayオブジェクト.
          */
-        VertexArray* getColors (float* scale_bias=0) const;
+        VertexArray* getColors(float* scale_bias = 0) const;
 
         /**
          * @~English  Retrieves the default color of this VertexBuffer.
          * @~Japanese このVertexBufferのデフォルトカラーを取得.
          * @return この頂点のデフォルトカラー.
          */
-        int getDefaultColor () const;
+        int getDefaultColor() const;
 
         /**
          * @~English  Gets the current normal vector array.
@@ -61,7 +58,7 @@ namespace m3g {
          * @param[out] scale_bias 法線配列に設定されたscale, bias値を書き込む領域.
          * @return 法線配列を持ったVertexArrayオブジェクト.
          */
-        VertexArray* getNormals (float* scale_bias=0) const;
+        VertexArray* getNormals(float* scale_bias = 0) const;
 
         /**
          * @~English  Returns the current vertex position array.
@@ -69,7 +66,7 @@ namespace m3g {
          * @param[out] scale_bias 頂点座標に設定されたscale, bias値を書き込む領域.
          * @return 頂点座標配列を持ったVertexArrayオブジェクト.
          */
-        VertexArray* getPositions (float* scale_bias) const;
+        VertexArray* getPositions(float* scale_bias) const;
 
         /**
          * @~English  Gets the current texture coordinate array for the specified texture unit.
@@ -77,15 +74,14 @@ namespace m3g {
          * @param[out] scale_bias テクスチャー座標に設定されたscale, bias値を書き込む領域.
          * @return テクスチャー座標配列を持ったVertexArrayオブジェクト.
          */
-        VertexArray* getTexCoords (int index, float* scale_bias) const;
+        VertexArray* getTexCoords(int index, float* scale_bias) const;
 
         /**
          * @~English  Retrieves the current number of vertices in this VertexBuffer.
          * @~Japanese このVertexBufferオブジェクトが保有する頂点数を取得する.
          * @return 頂点数.
          */
-        int getVertexCount () const;
-        
+        int getVertexCount() const;
 
         /**
          * @~English  Sets the per-vertex color for this VertexBuffer.
@@ -93,14 +89,14 @@ namespace m3g {
          * @param[in] colors カラー配列を保持するVertexArrayオブジェクト.
          * スケール、バイアス値は自動で設定される。
          */
-        void setColors (VertexArray* colors);
+        void setColors(VertexArray* colors);
 
         /**
          * @~English  Sets the color to use in absence of per-vetex colors.
          * @~Japanese 頂点カラーが設定されていないときのカラーを設定する.
          * @param[in] argb  デフォルトのカラー.
          */
-        void setDefaultColor (int argb);
+        void setDefaultColor(int argb);
 
         /**
          * @~English  Sets the normal vectors for this VertexBuffer.
@@ -108,7 +104,7 @@ namespace m3g {
          * @param[in] normals 法線配列を保持するVertexArrayオブジェクト.
          * スケール、バイアス値は自動で設定される。
          */
-        void setNormals (VertexArray* normals);
+        void setNormals(VertexArray* normals);
 
         /**
          * @~English  Sets the vertex positions for this VertexBuffer.
@@ -117,7 +113,7 @@ namespace m3g {
          * @param[in] scale     スケール値
          * @param[in] bias      バイアス値
          */
-        void setPositions (VertexArray* positions, float scale, float* bias);
+        void setPositions(VertexArray* positions, float scale, float* bias);
 
         /**
          * @~English  Sets the texture coordinates for the specified textureing unit.
@@ -127,52 +123,48 @@ namespace m3g {
          * @param[in] scale      スケール値
          * @param[in] bias       バイアス値
          */
-        void setTexCoords (int index, VertexArray* tex_coords, float scale, float* bias);
+        void setTexCoords(int index, VertexArray* tex_coords, float scale, float* bias);
 
         /**
          * @~English  Print out information of this object, for debug only.
          * @~Japanese このVertexBufferオブジェクトの情報を表示する。デバッグ用.
          */
-        virtual std::ostream& print (std::ostream& out) const;
-
+        virtual std::ostream& print(std::ostream& out) const;
 
     protected:
+        /**
+         * @~English
+         * @~Japanese
+         */
+        virtual void addAnimationTrack_xxx(AnimationTrack* animation_track, bool accepted);
 
         /**
-         * @~English  
-         * @~Japanese 
+         * @~English
+         * @~Japanese
          */
-        virtual void addAnimationTrack_xxx (AnimationTrack* animation_track, bool accepted);
+        virtual int animate_xxx(int world_time);
 
         /**
-         * @~English  
-         * @~Japanese 
+         * @~English
+         * @~Japanese
          */
-        virtual int animate_xxx (int world_time);
+        virtual VertexBuffer* duplicate_xxx(Object3D* obj) const;
 
         /**
-         * @~English  
-         * @~Japanese 
+         * @~English
+         * @~Japanese
          */
-        virtual VertexBuffer* duplicate_xxx (Object3D* obj) const;
+        virtual int getReferences_xxx(Object3D** references) const;
 
         /**
-         * @~English  
-         * @~Japanese 
+         * @~English
+         * @~Japanese
          */
-        virtual int getReferences_xxx (Object3D** references) const;
-
-        /**
-         * @~English  
-         * @~Japanese 
-         */
-        virtual void render_xxx (RenderState& state) const;
-
+        virtual void render_xxx(RenderState& state) const;
 
     private:
-        VertexBuffer (const VertexBuffer& vbuf);
-        VertexBuffer& operator= (const VertexBuffer& vbuf);
-
+        VertexBuffer(const VertexBuffer& vbuf);
+        VertexBuffer& operator=(const VertexBuffer& vbuf);
 
     private:
         VertexArray* positions;
@@ -180,20 +172,17 @@ namespace m3g {
         VertexArray* colors;
         VertexArray* tex_coords[MAX_TEXTURE_UNITS];
 
-        float        positions_scale;
-        float        positions_bias[3];
-        float        tex_coords_scale[MAX_TEXTURE_UNITS];
-        float        tex_coords_bias[MAX_TEXTURE_UNITS][3];
+        float positions_scale;
+        float positions_bias[3];
+        float tex_coords_scale[MAX_TEXTURE_UNITS];
+        float tex_coords_bias[MAX_TEXTURE_UNITS][3];
 
-        int           default_color;
+        int default_color;
         mutable float node_alpha;
     };
 
+} // namespace m3g
 
-} // namespace m3g {
-
-std::ostream& operator<< (std::ostream& out, const m3g::VertexBuffer& vbuf);
-
+std::ostream& operator<<(std::ostream& out, const m3g::VertexBuffer& vbuf);
 
 #endif
-

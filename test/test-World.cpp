@@ -8,59 +8,53 @@
 using namespace std;
 using namespace m3g;
 
-
-TEST (World_default_variables)
-{
+TEST(World_default_variables) {
     World* wld = new World;
 
-    CHECK_EQUAL ((Camera*)0    , wld->getActiveCamera());
-    CHECK_EQUAL ((Background*)0, wld->getBackground());
+    CHECK_EQUAL((Camera*)0, wld->getActiveCamera());
+    CHECK_EQUAL((Background*)0, wld->getBackground());
 
     delete wld;
 }
 
-TEST (World_set_variables)
-{
+TEST(World_set_variables) {
     Background* bg = new Background;
-    Camera* cam    = new Camera;
-    World* wld     = new World;
+    Camera* cam = new Camera;
+    World* wld = new World;
 
-    wld->addChild (cam);
-    wld->setActiveCamera (cam);
-    wld->setBackground (bg);
+    wld->addChild(cam);
+    wld->setActiveCamera(cam);
+    wld->setBackground(bg);
 
-    CHECK_EQUAL (cam, wld->getActiveCamera());
-    CHECK_EQUAL (bg, wld->getBackground());
+    CHECK_EQUAL(cam, wld->getActiveCamera());
+    CHECK_EQUAL(bg, wld->getBackground());
 
     delete bg;
     delete cam;
     delete wld;
 }
 
+TEST(World_duplicate) {
+    Background* bg = new Background;
+    Camera* cam = new Camera;
+    World* wld0 = new World;
 
-TEST (World_duplicate)
-{
-    Background* bg   = new Background;
-    Camera*     cam  = new Camera;
-    World*      wld0 = new World;
+    wld0->addChild(cam);
+    wld0->setActiveCamera(cam);
+    wld0->setBackground(bg);
 
-    wld0->addChild (cam);
-    wld0->setActiveCamera (cam);
-    wld0->setBackground (bg);
-
-    CHECK_EQUAL (1  , wld0->getChildCount());
-    CHECK_EQUAL (cam, wld0->getActiveCamera());
-    CHECK_EQUAL (bg , wld0->getBackground());
+    CHECK_EQUAL(1, wld0->getChildCount());
+    CHECK_EQUAL(cam, wld0->getActiveCamera());
+    CHECK_EQUAL(bg, wld0->getBackground());
 
     World* wld1 = wld0->duplicate();
 
-    CHECK_EQUAL (1 , wld1->getChildCount());
-    CHECK_EQUAL (bg,  wld1->getBackground());
+    CHECK_EQUAL(1, wld1->getChildCount());
+    CHECK_EQUAL(bg, wld1->getBackground());
 
     // ノードは複製された方を指す.
-    CHECK (wld0->getChild(0) != wld1->getChild(0));
-    CHECK (cam != wld1->getActiveCamera());
-
+    CHECK(wld0->getChild(0) != wld1->getChild(0));
+    CHECK(cam != wld1->getActiveCamera());
 
     delete bg;
     delete cam;
@@ -68,51 +62,47 @@ TEST (World_duplicate)
     delete wld1;
 }
 
+TEST(World_find) {
+    Background* bg = new Background;
+    Camera* cam = new Camera;
+    World* wld = new World;
 
-TEST (World_find)
-{
-    Background* bg   = new Background;
-    Camera*     cam  = new Camera;
-    World*      wld  = new World;
+    wld->addChild(cam);
+    wld->setActiveCamera(cam);
+    wld->setBackground(bg);
 
-    wld->addChild (cam);
-    wld->setActiveCamera (cam);
-    wld->setBackground (bg);
+    bg->setUserID(100);
+    cam->setUserID(101);
+    wld->setUserID(102);
 
-    bg->setUserID (100);
-    cam->setUserID (101);
-    wld->setUserID (102);
-
-    CHECK_EQUAL (bg , wld->find(100));
-    CHECK_EQUAL (cam, wld->find(101));
-    CHECK_EQUAL (wld, wld->find(102));
+    CHECK_EQUAL(bg, wld->find(100));
+    CHECK_EQUAL(cam, wld->find(101));
+    CHECK_EQUAL(wld, wld->find(102));
 
     delete bg;
     delete cam;
     delete wld;
 }
 
-TEST (World_getReferences)
-{
-    Background* bg  = new Background;
-    Camera*     cam = new Camera;
-    World*      wld = new World;
+TEST(World_getReferences) {
+    Background* bg = new Background;
+    Camera* cam = new Camera;
+    World* wld = new World;
 
-    wld->addChild (cam);
-    wld->setActiveCamera (cam);
-    wld->setBackground (bg);
+    wld->addChild(cam);
+    wld->setActiveCamera(cam);
+    wld->setBackground(bg);
 
     int n;
     Object3D* objs[3];
-    n = wld->getReferences (objs);
-    
-    CHECK_EQUAL (3, n);
-    CHECK_EQUAL (cam, objs[0]); // 子ノードとして
-    CHECK_EQUAL (bg , objs[1]);
-    CHECK_EQUAL (cam, objs[2]); // アクティブカメラとして
+    n = wld->getReferences(objs);
+
+    CHECK_EQUAL(3, n);
+    CHECK_EQUAL(cam, objs[0]); // 子ノードとして
+    CHECK_EQUAL(bg, objs[1]);
+    CHECK_EQUAL(cam, objs[2]); // アクティブカメラとして
 
     delete bg;
     delete cam;
     delete wld;
 }
-

@@ -1,19 +1,12 @@
 #ifndef __M3G_INTERSECT_HPP__
 #define __M3G_INTERSECT_HPP__
 
-
 namespace m3g {
 
     class Vector;
 
-    bool triangle_intersect (const Vector& org, const Vector& dir, 
-                             const Vector& v0, const Vector& v1, const Vector& v2,
-                             float* u, float* v, float* d);
+    bool triangle_intersect(const Vector& org, const Vector& dir, const Vector& v0, const Vector& v1, const Vector& v2, float* u, float* v, float* d);
 
-
-
-}
-
+} // namespace m3g
 
 #endif
-

@@ -4,7 +4,6 @@
 #include <iostream>
 #include <vector>
 
-
 namespace m3g {
 
     /**
@@ -13,16 +12,14 @@ namespace m3g {
      * @~Japanese キーフレームを定義する内部使用のクラス.
      *            time=-1は無効データを表します。
      */
-    class Keyframe
-    {
+    class Keyframe {
     public:
-
         /**
          * @internal
          * @~English  Create a new empty Keyframe object
          * @~Japanese 空のKeyframeオブジェクトを作成するコンストラクタ.
          */
-        Keyframe ();
+        Keyframe();
 
         /**
          * @internal
@@ -32,18 +29,18 @@ namespace m3g {
          * @~Japanese 指定されたデータを持つKeyframeオブジェクトを作成するコンストラクタ.
          * @param[in] time   このキーフレームの時刻.
          * @param[in] value  このキーフレームの値.
-         * 
+         *
          * 引数のvalueが指すメモリ領域は内部にコピーされません。
          * またdeleteは呼出側の責任で行います。
          */
-        Keyframe (int time, float* value);
+        Keyframe(int time, float* value);
 
         /**
          * @internal
          * @~English  Destruct this Keyframe object.
          * @~Japanese このオブジェクトを破壊するデストラクタ.
          */
-        ~Keyframe ();
+        ~Keyframe();
 
         /**
          * @internal
@@ -52,16 +49,16 @@ namespace m3g {
          * @~Japanese このオブジェクトの情報を表示する内部使用の関数, デバッグ用.
          * @param[in] out  メッセージの出力先.
          */
-        std::ostream& print (std::ostream& out) const;
+        std::ostream& print(std::ostream& out) const;
 
     public:
-        int    time;    ///< このキーフレームの時刻
-        float* value;   ///< このキーフレームの値
+        int time;     ///< このキーフレームの時刻
+        float* value; ///< このキーフレームの値
     };
 
     /**
      * @internal
-     * @~English  Perform step interpolation.  
+     * @~English  Perform step interpolation.
      * @param[in]  s                Blending weight of keyframe k0 and keyframe k1.
      * @param[in]  k0               Keyframe k0.
      * @param[in]  k1               Kefyrame k1.
@@ -76,11 +73,11 @@ namespace m3g {
      *
      * s=0のときk0に等しく、s=1の時にk1に等しい。中間値は両者をステップ補完した値を返す。
      */
-    void step   (float s, const Keyframe& k0, const Keyframe& k1, int component_count, float* value);
+    void step(float s, const Keyframe& k0, const Keyframe& k1, int component_count, float* value);
 
     /**
      * @internal
-     * @~English  Perform linear interpolation.  
+     * @~English  Perform linear interpolation.
      * @param[in]  s                Blending weight of keyframe k0 and keyframe k1.
      * @param[in]  k0               Keyframe k0.
      * @param[in]  k1               Kefyrame k1.
@@ -95,11 +92,11 @@ namespace m3g {
      *
      * s=0のときk0に等しく、s=1の時にk1に等しい。中間値は両者を線形補完した値を返す。
      */
-    void linear (float s, const Keyframe& k0, const Keyframe& k1, int component_count, float* value);
+    void linear(float s, const Keyframe& k0, const Keyframe& k1, int component_count, float* value);
 
     /**
      * @internal
-     * @~English  Perform spherical linear interpolation.  
+     * @~English  Perform spherical linear interpolation.
      * @param[in]  s                Blending weight of keyframe k0 and keyframe.
      * @param[in]  k0               Keyframe k0.
      * @param[in]  k1               Kefyrame k1.
@@ -114,11 +111,11 @@ namespace m3g {
      *
      * s=0のときk0に等しく、s=1の時にk1に等しい。中間値は両者を球面線形補完した値を返す。
      */
-    void slerp  (float s, const Keyframe& k0, const Keyframe& k1, int component_count, float* value);
+    void slerp(float s, const Keyframe& k0, const Keyframe& k1, int component_count, float* value);
 
     /*
      * @internal
-     * @~English  Perform spline interpolation.  
+     * @~English  Perform spline interpolation.
      * @param[in]  s                Blending weight of keyframe k1 and keyframe k2.
      * @param[in]  k0               Keyframe k0.
      * @param[in]  k1               Kefyrame k1.
@@ -138,11 +135,11 @@ namespace m3g {
      * s=0のときk0に等しく、s=1の時にk1に等しい。中間値は4つのキーフレームでスプライン補完した値を返す。
      * クォータニオンのスプライン補完はこの関数ではなくsquadを使用する。
      */
-    void spline (float s, const Keyframe& k0, const Keyframe& k1, const Keyframe& k2, const Keyframe& k3, int component_count, float* value);
+    void spline(float s, const Keyframe& k0, const Keyframe& k1, const Keyframe& k2, const Keyframe& k3, int component_count, float* value);
 
     /*
      * @internal
-     * @~English  Perform spline interpolation of quaternions.  
+     * @~English  Perform spline interpolation of quaternions.
      * @param[in]  s                Blending weight of keyframe k1 and keyframe k2.
      * @param[in]  k0               Keyframe k0.
      * @param[in]  k1               Kefyrame k1.
@@ -162,11 +159,9 @@ namespace m3g {
      * s=0のときk1に等しく、s=1の時にk2に等しい。中間値は4つのキーフレームでスプライン補完した値を返す。
      * この関数はクォータニオンのスプライン補完専用です。
      */
-    void squad  (float s, const Keyframe& k0, const Keyframe& k1, const Keyframe& k2, const Keyframe& k3, int component_count, float* value);
+    void squad(float s, const Keyframe& k0, const Keyframe& k1, const Keyframe& k2, const Keyframe& k3, int component_count, float* value);
 
-
-} // namespace m3g {
-
+} // namespace m3g
 
 /**
  * @internal
@@ -177,8 +172,6 @@ namespace m3g {
  * param[in]  out       メッセージの出力先.
  * param[in]  keyframe  情報を表示するKeyframeオブジェクト.
  */
-std::ostream& operator<< (std::ostream& out, const m3g::Keyframe& keyframe);
-
+std::ostream& operator<<(std::ostream& out, const m3g::Keyframe& keyframe);
 
 #endif
-

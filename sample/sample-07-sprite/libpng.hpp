@@ -1,7 +1,1 @@
-
-
-
-void* readpng (const char* name, int* width, int* height);
-
-
-
+void* readpng(const char* name, int* width, int* height);

@@ -2,37 +2,26 @@
 #include <iostream>
 using namespace m3g;
 using namespace std;
-//#include <typeinfo>
+// #include <typeinfo>
 
-Object:: Object () : exported_entity(0)
-{
-}
+Object::Object() : exported_entity(0) {}
 
-Object:: ~Object ()
-{
-}
+Object::~Object() {}
 
-void* Object:: getExportedEntity () const
-{
+void* Object::getExportedEntity() const {
     return exported_entity;
 }
 
-void Object:: setExportedEntity (void* entity)
-{
+void Object::setExportedEntity(void* entity) {
     exported_entity = entity;
 }
 
-
-std::ostream& Object:: print (std::ostream& out) const
-{
+std::ostream& Object::print(std::ostream& out) const {
     out << "Object: ";
     out << "  exported_entity=" << exported_entity;
     return out;
 }
 
-std::ostream& operator<< (std::ostream& out, const m3g::Object& obj)
-{
-    return obj.print (out);
+std::ostream& operator<<(std::ostream& out, const m3g::Object& obj) {
+    return obj.print(out);
 }
-
-

@@ -10,9 +10,7 @@ namespace m3g {
      * @~English  TriangleStripArray defines an array  of triangle strips.
      * @~Japanese トライアングルストリップの配列を定義する.
      */
-    class TriangleStripArray : public IndexBuffer
-    {
-
+    class TriangleStripArray : public IndexBuffer {
     public:
         /**
          * @~English  Constructs a triangle strip array with explicit indices.
@@ -22,7 +20,7 @@ namespace m3g {
          * @param[in] num_strip_lengths   ストリップの本数
          * @param[in] srip_lengths        ストリップの長さの配列
          */
-        TriangleStripArray (int num_indices, const int* indices, int num_strip_lengths, const int* strip_lengths);
+        TriangleStripArray(int num_indices, const int* indices, int num_strip_lengths, const int* strip_lengths);
 
         /**
          * @~English  Constructs a triangle strip array with implicit indices.
@@ -31,50 +29,42 @@ namespace m3g {
          * @param[in] num_strip_lengths    ストリップの本数
          * @param[in] srip_lengths         ストリップの長さの配列
          */
-        TriangleStripArray (int first_index, int num_strip_lengths, const int* strip_lengths);
-
+        TriangleStripArray(int first_index, int num_strip_lengths, const int* strip_lengths);
 
         /**
          * @~English  Destruct this object.
          * @~Japanese このオブジェクトを削除するデストラクタ.
          */
-        virtual ~TriangleStripArray ();
+        virtual ~TriangleStripArray();
 
         /**
-         * @~English  Creates a duplicate of this Object3D. 
+         * @~English  Creates a duplicate of this Object3D.
          * @~Japanese このオブジェクトの複製の作成.
          * @retrun  複製されたTriangleStripArrayオブジェクト.
          */
-        TriangleStripArray* duplicate () const;
-
+        TriangleStripArray* duplicate() const;
 
         /**
          * @~English  Print out information of this object, for debug only.
          * @~Japanese このTriangleStripArrayクラスの情報を表示する。デバッグ用の関数.
          * @param[in] out  表示先のストリーム
          */
-        virtual std::ostream& print (std::ostream& out) const;
-
+        virtual std::ostream& print(std::ostream& out) const;
 
     protected:
-
         /**
-         * @~English  
-         * @~Japanese 
+         * @~English
+         * @~Japanese
          */
-        virtual TriangleStripArray* duplicate_xxx (Object3D* obj) const;
-
+        virtual TriangleStripArray* duplicate_xxx(Object3D* obj) const;
 
     private:
-        TriangleStripArray (const TriangleStripArray& tris);
-        TriangleStripArray& operator= (const TriangleStripArray& tris);
-
+        TriangleStripArray(const TriangleStripArray& tris);
+        TriangleStripArray& operator=(const TriangleStripArray& tris);
     };
-  
 
-} // namespace m3g {
+} // namespace m3g
 
-std::ostream& operator<< (std::ostream& out, const m3g::TriangleStripArray& a);
-
+std::ostream& operator<<(std::ostream& out, const m3g::TriangleStripArray& a);
 
 #endif

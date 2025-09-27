@@ -1,4 +1,3 @@
-
 #ifndef __M3G_HPP__
 #define __M3G_HPP__
 
@@ -48,4 +47,3 @@
 #include "m3g/RenderState.hpp"
 
 #endif
-

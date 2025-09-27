@@ -45,103 +45,81 @@ using namespace m3g;
  *       更新の必要性をうまく取得できないため。いいアイディアを考えついたら修正する。
  */
 
-
-
-SkinnedMesh:: SkinnedMesh (VertexBuffer* vertices, 
-                           int           num_submesh   , IndexBuffer** submeshes,
-                           int           num_appearance, Appearance**  appearances_,
-                           Group*        skeleton_) :
-    Mesh (vertices, num_submesh, submeshes, num_appearance, appearances_),
-    skeleton(NULL), skinned_vertices(NULL)
-{
+SkinnedMesh::SkinnedMesh(VertexBuffer* vertices, int num_submesh, IndexBuffer** submeshes, int num_appearance, Appearance** appearances_, Group* skeleton_)
+    : Mesh(vertices, num_submesh, submeshes, num_appearance, appearances_), skeleton(NULL), skinned_vertices(NULL) {
     if (vertices->getPositions(0) == NULL) {
-        throw NullPointerException (__FILE__, __func__, "Vertices has no positions.");
+        throw NullPointerException(__FILE__, __func__, "Vertices has no positions.");
     }
     if (skeleton_ == NULL) {
-        throw NullPointerException (__FILE__, __func__, "Skeleton is NULL.");
+        throw NullPointerException(__FILE__, __func__, "Skeleton is NULL.");
     }
 
     skeleton = skeleton_;
-    skeleton->setParent (this);
+    skeleton->setParent(this);
 
-    initialize ();
+    initialize();
 }
 
-SkinnedMesh:: SkinnedMesh (VertexBuffer* vertices, 
-                           IndexBuffer*  submesh,
-                           Appearance*   appearance, 
-                           Group*        skeleton_) :
-    Mesh (vertices, submesh, appearance),
-    skeleton(0), skinned_vertices(0)
-{
+SkinnedMesh::SkinnedMesh(VertexBuffer* vertices, IndexBuffer* submesh, Appearance* appearance, Group* skeleton_)
+    : Mesh(vertices, submesh, appearance), skeleton(0), skinned_vertices(0) {
     if (vertices->getPositions(0) == NULL) {
-        throw NullPointerException (__FILE__, __func__, "Vertices has no positions.");
+        throw NullPointerException(__FILE__, __func__, "Vertices has no positions.");
     }
     if (skeleton_ == NULL) {
-        throw NullPointerException (__FILE__, __func__, "Skeleton is NULL.");
+        throw NullPointerException(__FILE__, __func__, "Skeleton is NULL.");
     }
 
     skeleton = skeleton_;
-    skeleton->setParent (this);
-    
-    initialize ();
+    skeleton->setParent(this);
+
+    initialize();
 }
 
-void SkinnedMesh:: initialize ()
-{
-    skinned_vertices = vertices->duplicate ();
+void SkinnedMesh::initialize() {
+    skinned_vertices = vertices->duplicate();
 
-    float        scale_bias[4];
+    float scale_bias[4];
     VertexArray* bind_positions = vertices->getPositions(scale_bias);
     if (bind_positions) {
-        VertexArray* skinned_positions = bind_positions->duplicate ();
-        skinned_positions->convert (4);
-        skinned_vertices->setPositions (skinned_positions, scale_bias[0], &scale_bias[1]);
+        VertexArray* skinned_positions = bind_positions->duplicate();
+        skinned_positions->convert(4);
+        skinned_vertices->setPositions(skinned_positions, scale_bias[0], &scale_bias[1]);
     }
 
-    VertexArray* bind_normals   = vertices->getNormals();
+    VertexArray* bind_normals = vertices->getNormals();
     if (bind_normals) {
         VertexArray* skinned_normals = bind_normals->duplicate();
-        skinned_vertices->setNormals (skinned_normals);
+        skinned_vertices->setNormals(skinned_normals);
     }
 
     int vertex_count = bind_positions->getVertexCount();
     bone_weights.reserve(vertex_count);
     for (int v = 0; v < vertex_count; v++) {
-        bone_weights.push_back (std::vector<BoneWeight>());
+        bone_weights.push_back(std::vector<BoneWeight>());
     }
     bind_poses.clear();
 }
 
-SkinnedMesh:: ~SkinnedMesh ()
-{
+SkinnedMesh::~SkinnedMesh() {
     if (skinned_vertices) {
         delete skinned_vertices;
     }
 }
 
-
-SkinnedMesh* SkinnedMesh:: duplicate () const
-{
-    return duplicate_xxx (NULL);
+SkinnedMesh* SkinnedMesh::duplicate() const {
+    return duplicate_xxx(NULL);
 }
 
-SkinnedMesh* SkinnedMesh:: duplicate_xxx (Object3D* obj) const
-{
+SkinnedMesh* SkinnedMesh::duplicate_xxx(Object3D* obj) const {
     SkinnedMesh* mesh = dynamic_cast<SkinnedMesh*>(obj);
     if (mesh == NULL) {
-        Group* skl  = skeleton->duplicate ();
-        mesh = new SkinnedMesh (vertices,
-                                indices.size(),
-                                (IndexBuffer**)&indices[0],
-                                appearances.size(),
-                                (Appearance**)&appearances[0],
-                                skl);
+        Group* skl = skeleton->duplicate();
+        mesh = new SkinnedMesh(vertices, indices.size(), (IndexBuffer**)&indices[0], appearances.size(), (Appearance**)&appearances[0], skl);
     }
-    Mesh:: duplicate_xxx (mesh);
+    Mesh::duplicate_xxx(mesh);
 
     mesh->bone_weights = bone_weights;
-    mesh->bind_poses   = bind_poses;
+    mesh->bind_poses = bind_poses;
     for (int i = 0; i < (int)bind_poses.size(); i++) {
         mesh->bind_poses[i].bone = bind_poses[i].bone->getDuplicatedNode();
     }
@@ -149,45 +127,41 @@ SkinnedMesh* SkinnedMesh:: duplicate_xxx (Object3D* obj) const
     return mesh;
 }
 
-
-int SkinnedMesh:: getReferences_xxx (Object3D** references) const
-{
-    int n  = Mesh:: getReferences_xxx (references);
-    if (skeleton)
+int SkinnedMesh::getReferences_xxx(Object3D** references) const {
+    int n = Mesh::getReferences_xxx(references);
+    if (skeleton) {
         references ? references[n] = skeleton, n++ : n++;
+    }
 
     return n;
 }
 
-int SkinnedMesh:: animate_xxx (int world_time)
-{
-    Mesh:: animate_xxx (world_time);
+int SkinnedMesh::animate_xxx(int world_time) {
+    Mesh::animate_xxx(world_time);
 
     // ボーンの移動
     if (skeleton) {
-        skeleton->animate (world_time);
+        skeleton->animate(world_time);
     }
 
     return 0;
 }
 
-void SkinnedMesh:: updateSkinnedVertices ()
-{
-    float        scale_bias[4];
-    VertexArray* bind_positions    = vertices->getPositions (scale_bias);
-    VertexArray* bind_normals      = vertices->getNormals ();
+void SkinnedMesh::updateSkinnedVertices() {
+    float scale_bias[4];
+    VertexArray* bind_positions = vertices->getPositions(scale_bias);
+    VertexArray* bind_normals = vertices->getNormals();
     VertexArray* skinned_positions = skinned_vertices->getPositions(0);
-    VertexArray* skinned_normals   = skinned_vertices->getNormals ();
-    //int          vertex_count      = bind_positions->getVertexCount();
-
+    VertexArray* skinned_normals = skinned_vertices->getNormals();
+    // int          vertex_count      = bind_positions->getVertexCount();
 
     // 基本マトリックスパレットの作成
     int bone_count = bind_poses.size();
-    std::vector<Matrix> matrix_palette (bone_count);
+    std::vector<Matrix> matrix_palette(bone_count);
     for (int b = 0; b < bone_count; b++) {
-        Matrix global_pose = bind_poses[b].bone->getGlobalPose (this);
-        matrix_palette[b]  = global_pose * bind_poses[b].inverse;
-        //cout << "global_pose[" << b << "] = " << global_pose << "\n";
+        Matrix global_pose = bind_poses[b].bone->getGlobalPose(this);
+        matrix_palette[b] = global_pose * bind_poses[b].inverse;
+        // cout << "global_pose[" << b << "] = " << global_pose << "\n";
     }
     // for (int b = 0; b < bone_count; b++) {
     //   cout << "bind_pose[" << b << "].inverse = " << bind_poses[b].inverse << "\n";
@@ -196,25 +170,24 @@ void SkinnedMesh:: updateSkinnedVertices ()
     //   cout << "matrix_palette[" << b << "] = " << matrix_palette[b] << "\n";
     // }
 
-
     // Position用マトリックスパレットの作成
     // (scale,biasの補正を考慮したもの)
-    std::vector<Matrix> positions_matrix_palette (bone_count);
+    std::vector<Matrix> positions_matrix_palette(bone_count);
     Matrix mat;
-    mat.setTranslate (scale_bias[1], scale_bias[2], scale_bias[3]);
-    mat.setScale (scale_bias[0], scale_bias[0], scale_bias[0]);
-    //cout << "mat = " << mat << "\n";
-    //cout << "mat_inv = " << mat.getInverse() << "\n";
+    mat.setTranslate(scale_bias[1], scale_bias[2], scale_bias[3]);
+    mat.setScale(scale_bias[0], scale_bias[0], scale_bias[0]);
+    // cout << "mat = " << mat << "\n";
+    // cout << "mat_inv = " << mat.getInverse() << "\n";
     for (int b = 0; b < bone_count; b++) {
         positions_matrix_palette[b] = mat.getInverse() * matrix_palette[b] * mat;
     }
-    //for (int b = 0; b < bone_count; b++) {
+    // for (int b = 0; b < bone_count; b++) {
     //  cout << "positions_matrix_palette[" << b << "] = " << positions_matrix_palette[b] << "\n";
     //}
 
     // Normal用マトリックスパレットの作成
     // (3x3成分のみを取りだし逆行列の転置したもの)
-    std::vector<Matrix> normals_matrix_palette (bone_count);
+    std::vector<Matrix> normals_matrix_palette(bone_count);
     if (bind_normals) {
         for (int b = 0; b < bone_count; b++) {
             normals_matrix_palette[b] = matrix_palette[b];
@@ -224,107 +197,100 @@ void SkinnedMesh:: updateSkinnedVertices ()
             normals_matrix_palette[b][15] = 1;
         }
     }
-  
+
     // 位置
     if (bind_positions) {
-        skinned_positions->setSkinning (bind_positions, bone_weights, positions_matrix_palette);
+        skinned_positions->setSkinning(bind_positions, bone_weights, positions_matrix_palette);
     }
 
     // 法線
     if (bind_normals) {
-        skinned_normals->setSkinning (bind_normals, bone_weights, normals_matrix_palette);
+        skinned_normals->setSkinning(bind_normals, bone_weights, normals_matrix_palette);
     }
-
-
 }
 
-
-
-void SkinnedMesh:: addTransform (Node* node, int weight, int first_vertex, int num_vertices)
-{
+void SkinnedMesh::addTransform(Node* node, int weight, int first_vertex, int num_vertices) {
     if (node == NULL) {
-        throw NullPointerException (__FILE__, __func__, "Bone node is NULL.");
+        throw NullPointerException(__FILE__, __func__, "Bone node is NULL.");
     }
     if (dynamic_cast<Group*>(node) == NULL) {
-        throw IllegalArgumentException (__FILE__, __func__, "Bone node must be Group.");
+        throw IllegalArgumentException(__FILE__, __func__, "Bone node must be Group.");
     }
-    if (!skeleton || !skeleton->isDescendant (node)) {
-        throw IllegalArgumentException (__FILE__, __func__, "Node is not descendant of this skeleton. node=%p", node);
+    if (!skeleton || !skeleton->isDescendant(node)) {
+        throw IllegalArgumentException(__FILE__, __func__, "Node is not descendant of this skeleton. node=%p", node);
     }
     if (weight <= 0) {
-        throw IllegalArgumentException (__FILE__, __func__, "Bone weight must be positive integer, weight=%f.", weight);
+        throw IllegalArgumentException(__FILE__, __func__, "Bone weight must be positive integer, weight=%f.", weight);
     }
     if (first_vertex < 0) {
-        throw IllegalArgumentException (__FILE__, __func__, "First vertex is invalid, first_vertex=%d.", first_vertex);
+        throw IllegalArgumentException(__FILE__, __func__, "First vertex is invalid, first_vertex=%d.", first_vertex);
     }
     if (num_vertices <= 0) {
-        throw IllegalArgumentException (__FILE__, __func__, "Number of vertices is invalid, num_vertex=%d.", num_vertices);
+        throw IllegalArgumentException(__FILE__, __func__, "Number of vertices is invalid, num_vertex=%d.", num_vertices);
     }
     if (first_vertex + num_vertices > 65535) {
-        throw IllegalArgumentException (__FILE__, __func__, "First vertex + number of vertices is invalid, first_vertex=%d, num_vertices=%d.", first_vertex, num_vertices);
+        throw IllegalArgumentException(__FILE__, __func__, "First vertex + number of vertices is invalid, first_vertex=%d, num_vertices=%d.", first_vertex, num_vertices);
     }
-
 
     // ボーンインデックスの決定
-    int index = addBoneIndex (node);
+    int index = addBoneIndex(node);
 
     // ボーンウェイト（index,weight）の保存
-    for (int v = first_vertex; v < first_vertex+num_vertices; v++) {
-        bone_weights[v].push_back (BoneWeight(index,weight));
+    for (int v = first_vertex; v < first_vertex + num_vertices; v++) {
+        bone_weights[v].push_back(BoneWeight(index, weight));
     }
-
 }
 
 /**
  * ボーン行列(ボーン座標からローカル座標への変換行列)の取得.
  */
-void SkinnedMesh:: getBoneTransform (Node* node, Transform* transform) const
-{
+void SkinnedMesh::getBoneTransform(Node* node, Transform* transform) const {
     if (node == NULL) {
-        throw NullPointerException (__FILE__, __func__, "Bone node is NULL.");
+        throw NullPointerException(__FILE__, __func__, "Bone node is NULL.");
     }
     if (transform == NULL) {
-        throw NullPointerException (__FILE__, __func__, "Transform is NULL.");
+        throw NullPointerException(__FILE__, __func__, "Transform is NULL.");
     }
     if (getBoneIndex(node) == -1) {
-        throw IllegalArgumentException (__FILE__, __func__, "Node is not bone of this SkinnedmEsh, node=0x%x.", node);
+        throw IllegalArgumentException(__FILE__, __func__, "Node is not bone of this SkinnedmEsh, node=0x%x.", node);
     }
-  
-    Matrix global_pose = node->getGlobalPose(this);
-    global_pose.invert ();
 
-    transform->set ((float*)global_pose.m);
+    Matrix global_pose = node->getGlobalPose(this);
+    global_pose.invert();
+
+    transform->set((float*)global_pose.m);
 }
 
-int SkinnedMesh:: getBoneVertices (Node* node, int* vertex_indices, float* weights) const
-{
+int SkinnedMesh::getBoneVertices(Node* node, int* vertex_indices, float* weights) const {
     if (node == NULL) {
-        throw NullPointerException (__FILE__, __func__, "Bone node is NULL.");
+        throw NullPointerException(__FILE__, __func__, "Bone node is NULL.");
     }
     if (vertices->getPositions(0) == NULL) {
-        throw NullPointerException (__FILE__, __func__, "Positions are not set.");
+        throw NullPointerException(__FILE__, __func__, "Positions are not set.");
     }
     if (getBoneIndex(node) == -1) {
-        throw IllegalArgumentException (__FILE__, __func__, "Node is not bone of this SkinnedMesh., node=0x%x", node);
+        throw IllegalArgumentException(__FILE__, __func__, "Node is not bone of this SkinnedMesh., node=0x%x", node);
     }
 
-    int bone_index      = getBoneIndex (node);
-    int vertex_count    = bone_weights.size();
-    int find            = 0;
+    int bone_index = getBoneIndex(node);
+    int vertex_count = bone_weights.size();
+    int find = 0;
 
     for (int v = 0; v < vertex_count; v++) {
-        float weight     = 0;
-        int   bone_count = bone_weights[v].size();
+        float weight = 0;
+        int bone_count = bone_weights[v].size();
         for (int b = 0; b < bone_count; b++) {
             weight += bone_weights[v][b].weight;
         }
         for (int b = 0; b < bone_count; b++) {
             if (bone_weights[v][b].index == bone_index) {
                 find++;
-                if (vertex_indices)
+                if (vertex_indices) {
                     *vertex_indices++ = v;
-                if (weights)
-                    *weights++        = bone_weights[v][b].weight/weight;
+                }
+                if (weights) {
+                    *weights++ = bone_weights[v][b].weight / weight;
+                }
             }
         }
     }
@@ -332,38 +298,32 @@ int SkinnedMesh:: getBoneVertices (Node* node, int* vertex_indices, float* weigh
     return find;
 }
 
-Group* SkinnedMesh:: getSkeleton () const
-{
+Group* SkinnedMesh::getSkeleton() const {
     return skeleton;
 }
 
-bool SkinnedMesh:: intersect (const Vector& org, const Vector& dir, RayIntersection* ri) const
-{
+bool SkinnedMesh::intersect(const Vector& org, const Vector& dir, RayIntersection* ri) const {
     bool hit;
     VertexBuffer* tmp = vertices;
 
     (const_cast<SkinnedMesh*>(this))->vertices = skinned_vertices;
-    hit = Mesh::intersect (org, dir, ri);
+    hit = Mesh::intersect(org, dir, ri);
     (const_cast<SkinnedMesh*>(this))->vertices = tmp;
     if (hit) {
         return true;
     }
 
     Transform trans;
-    getTransformTo (skeleton, &trans);
+    getTransformTo(skeleton, &trans);
 
-    Vector org_skel = trans.transform (org).divided_by_w();
-    Vector dir_skel = trans.transform3x3 (dir).divided_by_w().normalize();
+    Vector org_skel = trans.transform(org).divided_by_w();
+    Vector dir_skel = trans.transform3x3(dir).divided_by_w().normalize();
 
-    hit = skeleton->pick (-1, 
-                          org_skel.x, org_skel.y, org_skel.z,
-                          dir_skel.x, dir_skel.y, dir_skel.z,
-                          ri);
+    hit = skeleton->pick(-1, org_skel.x, org_skel.y, org_skel.z, dir_skel.x, dir_skel.y, dir_skel.z, ri);
     if (ri) {
-        skeleton->getTransformTo (this, &trans);
-        ri->transformRay (trans);
+        skeleton->getTransformTo(this, &trans);
+        ri->transformRay(trans);
     }
-
 
     return hit;
 }
@@ -372,18 +332,17 @@ bool SkinnedMesh:: intersect (const Vector& org, const Vector& dir, RayIntersect
  * Note: Mesh should be rendered only at 2nd rendering pass(pass=2).
  *       In other cases, do nothing.
  */
-void SkinnedMesh:: render_xxx (RenderState& state) const
-{
+void SkinnedMesh::render_xxx(RenderState& state) const {
     if (!isGlobalRenderingEnabled()) {
         return;
     }
 
-    //cout << "SkinnedMesh: render\n";
+    // cout << "SkinnedMesh: render\n";
 
     // スキンメッシュの更新
     // メモ：ここで毎フレーム呼び出すのはいいコードではない。
     //       きちんと更新の必要性をチェックすべき。
-    (const_cast<SkinnedMesh*>(this))->updateSkinnedVertices ();
+    (const_cast<SkinnedMesh*>(this))->updateSkinnedVertices();
 
     // 注意：vertices が skinned_vertices に変わった事を除けば Mesh::render()と同一。
     // M3Gの仕様で vertices を書き換える事は禁止されているので元に戻す。
@@ -391,51 +350,46 @@ void SkinnedMesh:: render_xxx (RenderState& state) const
     VertexBuffer* tmp = vertices;
     (const_cast<SkinnedMesh*>(this))->vertices = skinned_vertices;
 
-    glPushMatrix ();
-    Mesh::render_xxx (state);
-    glPopMatrix ();
+    glPushMatrix();
+    Mesh::render_xxx(state);
+    glPopMatrix();
 
     // 注意：骨には（レンダリングすべき）任意のノードを付加できるのでこれは必要
-    Transformable::render_xxx (state);
-    skeleton->render (state);
+    Transformable::render_xxx(state);
+    skeleton->render(state);
 
     (const_cast<SkinnedMesh*>(this))->vertices = tmp;
 }
-
 
 /**
  * 指定ノードをボーンとして登録する.
  * すでに登録済みなら何もしない。
  * 戻り値はそのインデックス.
  */
-int SkinnedMesh:: addBoneIndex (Node* bone)
-{
+int SkinnedMesh::addBoneIndex(Node* bone) {
     for (int i = 0; i < (int)bind_poses.size(); i++) {
         if (bind_poses[i].bone == bone) {
-            Matrix bind_pose = bone->getGlobalPose (this);
+            Matrix bind_pose = bone->getGlobalPose(this);
             bind_poses[i].inverse = bind_pose.invert();
             return i;
         }
     }
     // ボーンとバインドポーズ（の逆行列）を保存
-    Matrix bind_pose = bone->getGlobalPose (this);
-    bind_poses.push_back (BindPose(bone, bind_pose.invert()));
-    return bind_poses.size()-1;
+    Matrix bind_pose = bone->getGlobalPose(this);
+    bind_poses.push_back(BindPose(bone, bind_pose.invert()));
+    return bind_poses.size() - 1;
 }
 
-int SkinnedMesh:: getBoneIndex (Node* bone) const
-{
+int SkinnedMesh::getBoneIndex(Node* bone) const {
     for (int i = 0; i < (int)bind_poses.size(); i++) {
-        if (bind_poses[i].bone == bone)
+        if (bind_poses[i].bone == bone) {
             return i;
+        }
     }
     return -1;
 }
 
-
-
-std::ostream& SkinnedMesh:: print (std::ostream& out) const
-{
+std::ostream& SkinnedMesh::print(std::ostream& out) const {
     out << "SkinnedMesh: ";
     VertexArray* varry = vertices->getPositions(0);
     out << ((varry) ? varry->getVertexCount() : 0) << " vertices, ";
@@ -443,9 +397,6 @@ std::ostream& SkinnedMesh:: print (std::ostream& out) const
     return out;
 }
 
-std::ostream& operator<< (std::ostream& out, const SkinnedMesh& mesh)
-{
-    return mesh.print (out);
+std::ostream& operator<<(std::ostream& out, const SkinnedMesh& mesh) {
+    return mesh.print(out);
 }
-
-

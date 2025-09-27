@@ -11,65 +11,56 @@ using namespace m3g;
  * 比較対象からは外す。
  */
 
-TEST (ArithmeticException)
-{
+TEST(ArithmeticException) {
     const char* str = "Lynette Bishop";
-    ArithmeticException e (__FILE__, __func__, "%s", str);
-    CHECK_EQUAL ("Lynette Bishop", e.what()+strlen(e.what())-strlen(str));
+    ArithmeticException e(__FILE__, __func__, "%s", str);
+    CHECK_EQUAL("Lynette Bishop", e.what() + strlen(e.what()) - strlen(str));
 }
 
-TEST (IllegalArgumentException)
-{
+TEST(IllegalArgumentException) {
     const char* str = "Perrine-H. Clostermann";
     IllegalArgumentException e(__FILE__, __func__, "%s", str);
-    CHECK_EQUAL ("Perrine-H. Clostermann", e.what()+strlen(e.what())-strlen(str));
+    CHECK_EQUAL("Perrine-H. Clostermann", e.what() + strlen(e.what()) - strlen(str));
 }
 
-TEST (IllegalStateException)
-{
+TEST(IllegalStateException) {
     const char* str = "Minna-Dietlinde Wilcke";
     IllegalStateException e(__FILE__, __func__, "%s", str);
-    CHECK_EQUAL ("Minna-Dietlinde Wilcke", e.what()+strlen(e.what())-strlen(str));
+    CHECK_EQUAL("Minna-Dietlinde Wilcke", e.what() + strlen(e.what()) - strlen(str));
 }
 
-TEST (IndexOutOfBoundException)
-{
+TEST(IndexOutOfBoundException) {
     const char* str = "Charlotte E. Yeager";
     IndexOutOfBoundsException e(__FILE__, __func__, "%s", str);
-    CHECK_EQUAL ("Charlotte E. Yeager", e.what()+strlen(e.what())-strlen(str));
+    CHECK_EQUAL("Charlotte E. Yeager", e.what() + strlen(e.what()) - strlen(str));
 }
 
-TEST (IOException)
-{
+TEST(IOException) {
     const char* str = "Francesca Lucchini";
     IOException e(__FILE__, __func__, "%s", str);
-    CHECK_EQUAL ("Francesca Lucchini", e.what()+strlen(e.what())-strlen(str));
+    CHECK_EQUAL("Francesca Lucchini", e.what() + strlen(e.what()) - strlen(str));
 }
 
-TEST (NullPointException)
-{
+TEST(NullPointException) {
     const char* str = "Eila Ilmatar Juutilainen";
     NullPointerException e(__FILE__, __func__, "%s", str);
-    CHECK_EQUAL ("Eila Ilmatar Juutilainen", e.what()+strlen(e.what())-strlen(str));
+    CHECK_EQUAL("Eila Ilmatar Juutilainen", e.what() + strlen(e.what()) - strlen(str));
 }
 
-TEST (SecurityException)
-{
+TEST(SecurityException) {
     const char* str = "Sanya V. Litvyak";
     SecurityException e(__FILE__, __func__, "%s", str);
-    CHECK_EQUAL ("Sanya V. Litvyak", e.what()+strlen(e.what())-strlen(str));
+    CHECK_EQUAL("Sanya V. Litvyak", e.what() + strlen(e.what()) - strlen(str));
 }
 
-TEST (OpenGLException)
-{
+TEST(OpenGLException) {
     const char* str = "Erica Hartmann";
     OpenGLException e(__FILE__, __func__, "%s", str);
-    CHECK_EQUAL ("Erica Hartmann", e.what()+strlen(e.what())-strlen(str));
+    CHECK_EQUAL("Erica Hartmann", e.what() + strlen(e.what()) - strlen(str));
 }
 
-TEST (NotImplementedException)
-{
+TEST(NotImplementedException) {
     const char* str = "Gertrud Barkhorn";
     NotImplementedException e(__FILE__, __func__, "%s", str);
-    CHECK_EQUAL ("Gertrud Barkhorn", e.what()+strlen(e.what())-strlen(str));
+    CHECK_EQUAL("Gertrud Barkhorn", e.what() + strlen(e.what()) - strlen(str));
 }

@@ -11,29 +11,20 @@ using namespace m3g;
 using namespace std;
 #include <iterator>
 
+World::World() : background(0), active_camera(0) {}
 
-World:: World () :
-    background(0), active_camera(0)
-{
+World::~World() {}
+
+World* World::duplicate() const {
+    return duplicate_xxx(NULL);
 }
 
-World:: ~World ()
-{
-}
-
-World* World:: duplicate () const
-{
-    return duplicate_xxx (NULL);
-}
-
-World* World:: duplicate_xxx (Object3D* obj) const
-{
-    World* wld   = dynamic_cast<World*>(obj);
+World* World::duplicate_xxx(Object3D* obj) const {
+    World* wld = dynamic_cast<World*>(obj);
     if (wld == NULL) {
         wld = new World;
     }
-    Group:: duplicate_xxx (wld);
-
+    Group::duplicate_xxx(wld);
 
     wld->background = background;
     if (active_camera) {
@@ -43,23 +34,19 @@ World* World:: duplicate_xxx (Object3D* obj) const
     return wld;
 }
 
-
-int World:: animate_xxx (int world_time)
-{
-    Group:: animate_xxx (world_time);
+int World::animate_xxx(int world_time) {
+    Group::animate_xxx(world_time);
 
     if (background) {
-        background->animate (world_time);
+        background->animate(world_time);
     }
     // shoud not call active_camera->animate ();
 
     return 0;
 }
 
-
-int World:: getReferences_xxx (Object3D** references) const
-{
-    int n = Group:: getReferences_xxx (references);
+int World::getReferences_xxx(Object3D** references) const {
+    int n = Group::getReferences_xxx(references);
     if (background) {
         references ? references[n] = background, n++ : n++;
     }
@@ -67,33 +54,27 @@ int World:: getReferences_xxx (Object3D** references) const
         references ? references[n] = active_camera, n++ : n++;
     }
 
-
     return n;
 }
 
-
-Camera* World:: getActiveCamera () const
-{
+Camera* World::getActiveCamera() const {
     return active_camera;
 }
 
-Background* World:: getBackground () const
-{
+Background* World::getBackground() const {
     return background;
 }
 
-void World:: setActiveCamera (Camera* cam)
-{
+void World::setActiveCamera(Camera* cam) {
     if (cam == NULL) {
-        throw NullPointerException (__FILE__, __func__, "Camera is NULL.");
+        throw NullPointerException(__FILE__, __func__, "Camera is NULL.");
     }
     active_camera = cam;
 }
 
-void World:: setBackground (Background* bg)
-{
+void World::setBackground(Background* bg) {
     if (bg == NULL) {
-        throw NullPointerException (__FILE__, __func__, "Background is NULL.");
+        throw NullPointerException(__FILE__, __func__, "Background is NULL.");
     }
 
     background = bg;
@@ -106,57 +87,51 @@ void World:: setBackground (Background* bg)
  *   pass=1: render lights.
  *   pass=2: render objets.
  */
-void World:: render_xxx (RenderState& state) const
-{
+void World::render_xxx(RenderState& state) const {
     if (active_camera == NULL) {
-        throw IllegalStateException (__FILE__, __func__, "Active camera is NULL.");
+        throw IllegalStateException(__FILE__, __func__, "Active camera is NULL.");
     }
-    
-    //cout << "World render\n";
-    
+
+    // cout << "World render\n";
+
     state.camera = active_camera;
 
     vector<int>& v = state.valid_layers;
 
     switch (state.pass) {
-    case -1:
-        // 使用するレイヤー番号の収集
-        Group::render_xxx (state);
-        sort (v.begin(), v.end());
-        v.erase (unique(v.begin(), v.end()), v.end());
-        break;
-    case 0: {
-        // バックグラウンドとカメラ
-        if (background) {
-            background->render (state);
-        } else {
-            Background:: renderX ();
+        case -1:
+            // 使用するレイヤー番号の収集
+            Group::render_xxx(state);
+            sort(v.begin(), v.end());
+            v.erase(unique(v.begin(), v.end()), v.end());
+            break;
+        case 0: {
+            // バックグラウンドとカメラ
+            if (background) {
+                background->render(state);
+            } else {
+                Background::renderX();
+            }
+            active_camera->render(state);
+            break;
         }
-        active_camera->render (state);
-        break;
+        case 1:
+            // ライト
+            state.light_index = 0;
+            Group::render_xxx(state);
+            break;
+        case 2:
+            // プリミティブ
+            for (int i = 0; i < (int)state.valid_layers.size(); i++) {
+                state.layer = state.valid_layers[i];
+                Group::render_xxx(state);
+            }
+            break;
+        default: throw IllegalStateException(__FILE__, __func__, "Render pass is invalid, pass=%d.", state.pass);
     }
-    case 1:
-        // ライト
-        state.light_index = 0;
-        Group::render_xxx (state);
-        break;
-    case 2:
-        // プリミティブ
-        for (int i = 0; i < (int)state.valid_layers.size(); i++) {
-            state.layer = state.valid_layers[i];
-            Group::render_xxx (state);
-        }
-        break;
-    default:
-        throw IllegalStateException (__FILE__, __func__, "Render pass is invalid, pass=%d.", state.pass);
-    }
-
 }
 
-
-
-std::ostream& World::print (std::ostream& out) const
-{
+std::ostream& World::print(std::ostream& out) const {
     out << "World: \n";
     int index = -1;
     for (int i = 0; i < (int)children.size(); i++) {
@@ -165,14 +140,16 @@ std::ostream& World::print (std::ostream& out) const
             break;
         }
     }
-    if (index >= 0)
+    if (index >= 0) {
         out << "  active camera = [" << index << "]\n";
-    else 
+    } else {
         out << "  active camera = NOT FOUND\n";
-    if (background)
+    }
+    if (background) {
         out << "  background    = " << *background << "\n";
-    else 
+    } else {
         out << "  background    = NOT FOUND\n";
+    }
     for (int i = 0; i < (int)children.size(); i++) {
         out << "  [" << i << "] : ";
         children[i]->print(out) << "\n";
@@ -181,7 +158,6 @@ std::ostream& World::print (std::ostream& out) const
     return out;
 }
 
-std::ostream& operator<< (std::ostream& out, const m3g::World& wld)
-{
+std::ostream& operator<<(std::ostream& out, const m3g::World& wld) {
     return wld.print(out);
 }

@@ -12,279 +12,253 @@
 using namespace std;
 using namespace m3g;
 
-
-Appearance:: Appearance () :
-    layer(0), polygon_mode(0), compositing_mode(0),
-    material(0), fog(0)
-{
+Appearance::Appearance() : layer(0), polygon_mode(0), compositing_mode(0), material(0), fog(0) {
     for (int i = 0; i < MAX_TEXTURE_UNITS; i++) {
-        textures.push_back (0);
+        textures.push_back(0);
     }
 }
 
-Appearance:: ~Appearance ()
-{
+Appearance::~Appearance() {}
+
+Appearance* Appearance::duplicate() const {
+    return duplicate_xxx(NULL);
 }
 
-Appearance* Appearance:: duplicate () const
-{
-    return duplicate_xxx (NULL);
-}
-
-Appearance* Appearance:: duplicate_xxx (Object3D* obj) const
-{
+Appearance* Appearance::duplicate_xxx(Object3D* obj) const {
     Appearance* app = dynamic_cast<Appearance*>(obj);
     if (app == NULL) {
         app = new Appearance;
     }
-    Object3D:: duplicate_xxx (app);
+    Object3D::duplicate_xxx(app);
 
-    app->layer            = layer;
-    app->polygon_mode     = polygon_mode;
+    app->layer = layer;
+    app->polygon_mode = polygon_mode;
     app->compositing_mode = compositing_mode;
-    app->material         = material;
-    app->textures         = textures;
-    app->fog              = fog;
+    app->material = material;
+    app->textures = textures;
+    app->fog = fog;
 
     return app;
 }
 
-
-int Appearance:: getReferences_xxx (Object3D** references) const
-{
-    int n = Object3D:: getReferences_xxx (references);
-    if (polygon_mode)
+int Appearance::getReferences_xxx(Object3D** references) const {
+    int n = Object3D::getReferences_xxx(references);
+    if (polygon_mode) {
         references ? references[n] = polygon_mode, n++ : n++;
-    if (compositing_mode)
-        references ? references[n] = compositing_mode, n++ : n++;
-    if (material)
-        references ? references[n] = material, n++ : n++;
-    for (int i = 0; i < MAX_TEXTURE_UNITS; i++) {
-        if (textures[i])
-            references ? references[n] = textures[i], n++ : n++;
     }
-    if (fog)
+    if (compositing_mode) {
+        references ? references[n] = compositing_mode, n++ : n++;
+    }
+    if (material) {
+        references ? references[n] = material, n++ : n++;
+    }
+    for (int i = 0; i < MAX_TEXTURE_UNITS; i++) {
+        if (textures[i]) {
+            references ? references[n] = textures[i], n++ : n++;
+        }
+    }
+    if (fog) {
         references ? references[n] = fog, n++ : n++;
+    }
 
     return n;
 }
 
-int Appearance:: animate_xxx (int world_time)
-{
-    Object3D:: animate_xxx (world_time);
+int Appearance::animate_xxx(int world_time) {
+    Object3D::animate_xxx(world_time);
 
     if (polygon_mode) {
-        polygon_mode->animate (world_time);
+        polygon_mode->animate(world_time);
     }
     if (compositing_mode) {
-        compositing_mode->animate (world_time);
+        compositing_mode->animate(world_time);
     }
 
     for (int i = 0; i < (int)textures.size(); i++) {
         if (textures[i]) {
-            textures[i]->animate (world_time);
+            textures[i]->animate(world_time);
         }
     }
     if (material) {
-        material->animate (world_time);
+        material->animate(world_time);
     }
     if (fog) {
-        fog->animate (world_time);
+        fog->animate(world_time);
     }
 
     return 0;
 }
 
-
-
-
-CompositingMode* Appearance:: getCompositingMode () const
-{
+CompositingMode* Appearance::getCompositingMode() const {
     return compositing_mode;
 }
 
-Fog* Appearance:: getFog () const
-{
+Fog* Appearance::getFog() const {
     return fog;
 }
 
-int Appearance:: getLayer () const
-{
+int Appearance::getLayer() const {
     return layer;
 }
 
-int Appearance:: getLayer2 () const
-{
-    int layer2 = layer*2;
+int Appearance::getLayer2() const {
+    int layer2 = layer * 2;
     if (compositing_mode && compositing_mode->getBlending() != CompositingMode::REPLACE) {
         layer2 += 1;
     }
     return layer2;
 }
 
-Material* Appearance:: getMaterial () const
-{
+Material* Appearance::getMaterial() const {
     return material;
 }
 
-PolygonMode* Appearance:: getPolygonMode () const
-{
+PolygonMode* Appearance::getPolygonMode() const {
     return polygon_mode;
 }
 
-Texture2D* Appearance:: getTexture (int index) const
-{
+Texture2D* Appearance::getTexture(int index) const {
     if (index < 0 || index >= (int)textures.size()) {
-        throw IndexOutOfBoundsException (__FILE__, __func__, "Texture index is inalid, index=%d", index);
+        throw IndexOutOfBoundsException(__FILE__, __func__, "Texture index is inalid, index=%d", index);
     }
     return textures[index];
 }
 
-void Appearance:: setCompositingMode (CompositingMode* mode)
-{
+void Appearance::setCompositingMode(CompositingMode* mode) {
     // null is ok, use default.
     compositing_mode = mode;
 }
 
-void Appearance:: setFog (Fog* f)
-{
+void Appearance::setFog(Fog* f) {
     if (f == NULL) {
-        throw NullPointerException (__FILE__, __func__, "Null fog is specified.");
+        throw NullPointerException(__FILE__, __func__, "Null fog is specified.");
     }
     fog = f;
 }
 
-void Appearance:: setLayer (int layer_)
-{
+void Appearance::setLayer(int layer_) {
     if (layer_ < -63 || layer_ > 64) {
-        throw IllegalArgumentException (__FILE__, __func__, "Lyaer is invalid, layer=%d.", layer_);
+        throw IllegalArgumentException(__FILE__, __func__, "Lyaer is invalid, layer=%d.", layer_);
     }
     layer = layer_;
 }
 
-void Appearance:: setMaterial (Material* mat)
-{
+void Appearance::setMaterial(Material* mat) {
     // null is ok, use default.
     material = mat;
 }
 
-void Appearance:: setPolygonMode (PolygonMode* mode)
-{
+void Appearance::setPolygonMode(PolygonMode* mode) {
     // null is ok, use default.
     polygon_mode = mode;
 }
 
-void Appearance:: setTexture (int index, Texture2D* texture)
-{
+void Appearance::setTexture(int index, Texture2D* texture) {
     if (index < 0 || index >= (int)textures.size()) {
-        throw IndexOutOfBoundsException (__FILE__, __func__, "Texture unit index is invalid, i=%d in [0,%d).", index, textures.size());
+        throw IndexOutOfBoundsException(__FILE__, __func__, "Texture unit index is invalid, i=%d in [0,%d).", index, textures.size());
     }
 
     textures[index] = texture;
 }
 
-
 /**
  * Note: Appearance should be rendered only at second rendering pass(pass=2).
  * In other cases, do nothing.
  */
-void Appearance:: render_xxx (RenderState& state) const
-{
+void Appearance::render_xxx(RenderState& state) const {
     if (state.pass != 2) {
         return;
     }
 
-    //cout << "Appearance: render\n";
+    // cout << "Appearance: render\n";
 
     if (fog) {
-        fog->render (state);
+        fog->render(state);
     } else {
-        Fog:: renderX ();
+        Fog::renderX();
     }
 
     if (material) {
-        material->render (state);
+        material->render(state);
     } else {
-        Material:: renderX ();
+        Material::renderX();
     }
 
     if (compositing_mode) {
-        compositing_mode->render (state);
+        compositing_mode->render(state);
     } else {
-        CompositingMode:: renderX ();
+        CompositingMode::renderX();
     }
 
     if (polygon_mode) {
-        polygon_mode->render (state);
+        polygon_mode->render(state);
     } else {
-        PolygonMode:: renderX ();
+        PolygonMode::renderX();
     }
 
     // ここのgl関数はTexture2Dの中に移動しようか？
     // 注意：テクスチャーマトリックスは独立に複数あるので
     // それぞれについて初期化が必要。
 
-    glMatrixMode (GL_TEXTURE);
+    glMatrixMode(GL_TEXTURE);
 
-    glEnable (GL_TEXTURE_2D);
+    glEnable(GL_TEXTURE_2D);
     for (int i = 0; i < (int)textures.size(); i++) {
         if (textures[i]) {
-            glActiveTexture       (GL_TEXTURE0+i);           // テクスチャーユニットの選択     
-            glEnable              (GL_TEXTURE_2D);           // テクスチャーユニットの有効化
-            textures[i]->render (state);
+            glActiveTexture(GL_TEXTURE0 + i); // テクスチャーユニットの選択
+            glEnable(GL_TEXTURE_2D);          // テクスチャーユニットの有効化
+            textures[i]->render(state);
         } else {
-            glActiveTexture       (GL_TEXTURE0+i);            // テクスチャーユニットの選択     
-            glDisable             (GL_TEXTURE_2D);            // テクスチャーユニットの無効化
-            Texture2D:: renderX ();
+            glActiveTexture(GL_TEXTURE0 + i); // テクスチャーユニットの選択
+            glDisable(GL_TEXTURE_2D);         // テクスチャーユニットの無効化
+            Texture2D::renderX();
         }
     }
 
-    glMatrixMode (GL_MODELVIEW);
-
+    glMatrixMode(GL_MODELVIEW);
 }
 
-
-void Appearance:: renderX ()
-{
-    PolygonMode    :: renderX ();
-    CompositingMode:: renderX ();
-    Material       :: renderX ();
-    Texture2D      :: renderX ();
-    Fog            :: renderX ();
+void Appearance::renderX() {
+    PolygonMode ::renderX();
+    CompositingMode::renderX();
+    Material ::renderX();
+    Texture2D ::renderX();
+    Fog ::renderX();
 }
 
-std::ostream& Appearance:: print (std::ostream& out) const
-{
+std::ostream& Appearance::print(std::ostream& out) const {
     out << "Appearance: ";
     out << "  layer=" << layer;
-    if (polygon_mode)
+    if (polygon_mode) {
         out << ", polygon_mode=" << *polygon_mode;
-    else
+    } else {
         out << ", polygon_mode=DEFAULT";
-    if (compositing_mode)
-        out << ", compositing_mode=" << *compositing_mode;
-    else
-        out << ", compositing_mode=DEFAULT";
-    if (material)
-        out << ", material=" << *material;
-    else
-        out << ", mterial=DEFAULT";
-    for (int i = 0; i < (int)textures.size(); i++) {
-        if (textures[i])
-            out << ", textures[" << i << "]=" << *textures[i];
-        else
-            out << ", textures[" << i << "]=NOT FOUND";
     }
-    if (fog) 
+    if (compositing_mode) {
+        out << ", compositing_mode=" << *compositing_mode;
+    } else {
+        out << ", compositing_mode=DEFAULT";
+    }
+    if (material) {
+        out << ", material=" << *material;
+    } else {
+        out << ", mterial=DEFAULT";
+    }
+    for (int i = 0; i < (int)textures.size(); i++) {
+        if (textures[i]) {
+            out << ", textures[" << i << "]=" << *textures[i];
+        } else {
+            out << ", textures[" << i << "]=NOT FOUND";
+        }
+    }
+    if (fog) {
         out << ", fog=" << *fog;
-    else
+    } else {
         out << ", fog=DEFAULT";
+    }
     return out;
 }
 
-
-ostream& operator<< (ostream& out, const Appearance& app)
-{
+ostream& operator<<(ostream& out, const Appearance& app) {
     return app.print(out);
 }
-
