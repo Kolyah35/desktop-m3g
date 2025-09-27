@@ -1,4 +1,4 @@
-#include "m3g/Exception.hpp"
+#include "Exception.hpp"
 #include <cstdio>
 #include <cstdarg>
 using namespace m3g;

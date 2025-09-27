@@ -1,10 +1,10 @@
-#include "m3g/Node.hpp"
-#include "m3g/Exception.hpp"
-#include "m3g/AnimationTrack.hpp"
-#include "m3g/AnimationController.hpp"
-#include "m3g/KeyframeSequence.hpp"
-#include "m3g/RenderState.hpp"
-#include "m3g/Vector.hpp"
+#include "Node.hpp"
+#include "Exception.hpp"
+#include "AnimationTrack.hpp"
+#include "AnimationController.hpp"
+#include "KeyframeSequence.hpp"
+#include "RenderState.hpp"
+#include "Vector.hpp"
 #include <iostream>
 #include <cmath>
 using namespace std;

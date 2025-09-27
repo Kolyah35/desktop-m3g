@@ -1,14 +1,14 @@
 #include <iostream>
 #include <cmath>
-#include "m3g/m3g-gl.hpp"
-#include "m3g/Camera.hpp"
-#include "m3g/Vector.hpp"
-#include "m3g/Transform.hpp"
-#include "m3g/AnimationTrack.hpp"
-#include "m3g/AnimationController.hpp"
-#include "m3g/KeyframeSequence.hpp"
-#include "m3g/Exception.hpp"
-#include "m3g/RenderState.hpp"
+#include "m3g-gl.hpp"
+#include "Camera.hpp"
+#include "Vector.hpp"
+#include "Transform.hpp"
+#include "AnimationTrack.hpp"
+#include "AnimationController.hpp"
+#include "KeyframeSequence.hpp"
+#include "Exception.hpp"
+#include "RenderState.hpp"
 using namespace std;
 using namespace m3g;
 

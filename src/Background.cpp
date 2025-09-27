@@ -1,11 +1,11 @@
-#include "m3g/m3g-gl.hpp"
-#include "m3g/Background.hpp"
-#include "m3g/Image2D.hpp"
-#include "m3g/Exception.hpp"
-#include "m3g/AnimationTrack.hpp"
-#include "m3g/AnimationController.hpp"
-#include "m3g/KeyframeSequence.hpp"
-#include "m3g/RenderState.hpp"
+#include "m3g-gl.hpp"
+#include "Background.hpp"
+#include "Image2D.hpp"
+#include "Exception.hpp"
+#include "AnimationTrack.hpp"
+#include "AnimationController.hpp"
+#include "KeyframeSequence.hpp"
+#include "RenderState.hpp"
 #include <iostream>
 #include <iomanip>
 using namespace std;

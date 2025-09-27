@@ -1,4 +1,4 @@
-#include "m3g/Object.hpp"
+#include "Object.hpp"
 #include <iostream>
 using namespace m3g;
 using namespace std;

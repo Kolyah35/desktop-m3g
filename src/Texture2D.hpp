@@ -1,7 +1,7 @@
 #ifndef __M3G_TEXTURE2D_HPP__
 #define __M3G_TEXTURE2D_HPP__
 
-#include "m3g/Transformable.hpp"
+#include "Transformable.hpp"
 #include <iostream>
 
 namespace m3g {

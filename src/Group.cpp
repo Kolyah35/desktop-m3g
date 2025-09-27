@@ -1,15 +1,15 @@
 #include <iostream>
 #include <algorithm>
-#include "m3g/m3g-gl.hpp"
-#include "m3g/Group.hpp"
-#include "m3g/RayIntersection.hpp"
-#include "m3g/Exception.hpp"
-#include "m3g/World.hpp"
-#include "m3g/Vector.hpp"
-#include "m3g/Camera.hpp"
-#include "m3g/Mesh.hpp"
-#include "m3g/SkinnedMesh.hpp"
-#include "m3g/Sprite3D.hpp"
+#include "m3g-gl.hpp"
+#include "Group.hpp"
+#include "RayIntersection.hpp"
+#include "Exception.hpp"
+#include "World.hpp"
+#include "Vector.hpp"
+#include "Camera.hpp"
+#include "Mesh.hpp"
+#include "SkinnedMesh.hpp"
+#include "Sprite3D.hpp"
 using namespace m3g;
 using namespace std;
 

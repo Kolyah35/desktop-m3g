@@ -2,7 +2,7 @@
 #define __M3G_BACKGROUND_HPP__
 
 #include <iosfwd>
-#include "m3g/Object3D.hpp"
+#include "Object3D.hpp"
 
 namespace m3g {
 

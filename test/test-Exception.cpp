@@ -1,7 +1,7 @@
 #include <unittest++/UnitTest++.h>
 #include <iostream>
 #include <string.h>
-#include "m3g/Exception.hpp"
+#include "Exception.hpp"
 using namespace std;
 using namespace m3g;
 

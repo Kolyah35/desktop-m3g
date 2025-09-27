@@ -1,7 +1,7 @@
-#include "m3g/m3g-gl.hpp"
-#include "m3g/IndexBuffer.hpp"
-#include "m3g/Exception.hpp"
-#include "m3g/RenderState.hpp"
+#include "m3g-gl.hpp"
+#include "IndexBuffer.hpp"
+#include "Exception.hpp"
+#include "RenderState.hpp"
 #include <iostream>
 using namespace m3g;
 using namespace std;

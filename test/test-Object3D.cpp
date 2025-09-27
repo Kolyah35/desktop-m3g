@@ -1,9 +1,9 @@
 #include <unittest++/UnitTest++.h>
 #include <iostream>
-#include "m3g/Object3D.hpp"
-#include "m3g/AnimationTrack.hpp"
-#include "m3g/KeyframeSequence.hpp"
-#include "m3g/Node.hpp"
+#include "Object3D.hpp"
+#include "AnimationTrack.hpp"
+#include "KeyframeSequence.hpp"
+#include "Node.hpp"
 using namespace std;
 using namespace m3g;
 

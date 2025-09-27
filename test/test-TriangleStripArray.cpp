@@ -1,8 +1,8 @@
 #include <unittest++/UnitTest++.h>
 #include <iostream>
 #include <cstring>
-#include "m3g/IndexBuffer.hpp"
-#include "m3g/TriangleStripArray.hpp"
+#include "IndexBuffer.hpp"
+#include "TriangleStripArray.hpp"
 using namespace std;
 using namespace m3g;
 

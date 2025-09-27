@@ -1,8 +1,8 @@
-#include "m3g/m3g-gl.hpp"
-#include "m3g/PolygonMode.hpp"
-#include "m3g/Exception.hpp"
-#include "m3g/RenderState.hpp"
-#include "m3g/Config.hpp"
+#include "m3g-gl.hpp"
+#include "PolygonMode.hpp"
+#include "Exception.hpp"
+#include "RenderState.hpp"
+#include "Config.hpp"
 #include <iostream>
 using namespace std;
 using namespace m3g;

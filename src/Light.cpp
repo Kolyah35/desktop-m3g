@@ -1,10 +1,10 @@
-#include "m3g/m3g-gl.hpp"
-#include "m3g/Light.hpp"
-#include "m3g/Exception.hpp"
-#include "m3g/AnimationTrack.hpp"
-#include "m3g/AnimationController.hpp"
-#include "m3g/KeyframeSequence.hpp"
-#include "m3g/RenderState.hpp"
+#include "m3g-gl.hpp"
+#include "Light.hpp"
+#include "Exception.hpp"
+#include "AnimationTrack.hpp"
+#include "AnimationController.hpp"
+#include "KeyframeSequence.hpp"
+#include "RenderState.hpp"
 #include <iostream>
 #include <iomanip>
 using namespace std;

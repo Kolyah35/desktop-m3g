@@ -1,8 +1,8 @@
-#include "m3g/m3g-gl.hpp"
-#include "m3g/VertexArray.hpp"
-#include "m3g/Exception.hpp"
-#include "m3g/Vector.hpp"
-#include "m3g/BoneWeight.hpp"
+#include "m3g-gl.hpp"
+#include "VertexArray.hpp"
+#include "Exception.hpp"
+#include "Vector.hpp"
+#include "BoneWeight.hpp"
 #include <iostream>
 #include <cstring>
 using namespace std;

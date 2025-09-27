@@ -1,6 +1,6 @@
 #include <unittest++/UnitTest++.h>
 #include <iostream>
-#include "m3g/Fog.hpp"
+#include "Fog.hpp"
 using namespace std;
 using namespace m3g;
 

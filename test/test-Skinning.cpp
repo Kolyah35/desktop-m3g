@@ -2,8 +2,8 @@
 #include <iostream>
 #include <cstring>
 #include <GL/gl.h>
-#include "m3g/VertexArray.hpp"
-#include "m3g/BoneWeight.hpp"
+#include "VertexArray.hpp"
+#include "BoneWeight.hpp"
 using namespace std;
 using namespace m3g;
 

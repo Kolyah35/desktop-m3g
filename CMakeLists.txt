@@ -2,19 +2,19 @@
 # M3G project config file.
 # =================================
 
-# project info
-project(M3G)
-
 # required cmake
 cmake_minimum_required(VERSION 3.10)
+
+# project info
+project(M3G)
 
 # =================================
 # Avairable options
 # =================================
 option(USE_GL "Set ON, if you use OpenGL (default ON)" ON)
 option(USE_GL_ES "Set ON, if you use OpenGL ES (default OFF)" OFF)
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/src/m3g/Config.hpp.in
-    ${CMAKE_CURRENT_BINARY_DIR}/src/m3g/Config.hpp)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/src/Config.hpp.in
+    ${CMAKE_CURRENT_BINARY_DIR}/src/Config.hpp)
 
 # ================================
 # Default Build is "Debug"

@@ -1,7 +1,7 @@
 #include <unittest++/UnitTest++.h>
 #include <iostream>
 #include <cstring>
-#include "m3g/Light.hpp"
+#include "Light.hpp"
 using namespace std;
 using namespace m3g;
 

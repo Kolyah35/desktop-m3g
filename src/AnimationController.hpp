@@ -1,7 +1,7 @@
 #ifndef __M3G_ANIMATION_CONTROLLER_HPP__
 #define __M3G_ANIMATION_CONTROLLER_HPP__
 
-#include "m3g/Object3D.hpp"
+#include "Object3D.hpp"
 #include <iosfwd>
 
 namespace m3g {

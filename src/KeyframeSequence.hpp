@@ -1,8 +1,8 @@
 #ifndef __M3G_KEYFRAME_SEQUENCE_HPP__
 #define __M3G_KEYFRAME_SEQUENCE_HPP__
 
-#include "m3g/Object3D.hpp"
-#include "m3g/Keyframe.hpp"
+#include "Object3D.hpp"
+#include "Keyframe.hpp"
 #include <iosfwd>
 
 namespace m3g {

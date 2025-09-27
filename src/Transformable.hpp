@@ -1,9 +1,9 @@
 #ifndef __M3G_TRANSFORMABLE_HPP__
 #define __M3G_TRANSFORMABLE_HPP__
 
-#include "m3g/Object3D.hpp"
-#include "m3g/Quaternion.hpp"
-#include "m3g/Transform.hpp"
+#include "Object3D.hpp"
+#include "Quaternion.hpp"
+#include "Transform.hpp"
 #include <iosfwd>
 
 namespace m3g {

@@ -1,10 +1,10 @@
 #include <unittest++/UnitTest++.h>
 #include <iostream>
 #include <cstdlib>
-#include "m3g/Transform.hpp"
-#include "m3g/VertexArray.hpp"
-#include "m3g/Quaternion.hpp"
-#include "m3g/Vector.hpp"
+#include "Transform.hpp"
+#include "VertexArray.hpp"
+#include "Quaternion.hpp"
+#include "Vector.hpp"
 
 using namespace std;
 using namespace m3g;

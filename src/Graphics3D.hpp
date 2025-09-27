@@ -4,7 +4,7 @@
 #include <vector>
 #include <iosfwd>
 #include <map>
-#include "m3g/Object.hpp"
+#include "Object.hpp"
 
 namespace m3g {
 

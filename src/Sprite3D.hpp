@@ -1,7 +1,7 @@
 #ifndef __M3G_SPRITE3D_HPP__
 #define __M3G_SPRITE3D_HPP__
 
-#include "m3g/Node.hpp"
+#include "Node.hpp"
 #include <iosfwd>
 
 namespace m3g {

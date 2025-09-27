@@ -2,7 +2,7 @@
 #define __M3G_CAMERA_HPP__
 
 #include <iosfwd>
-#include "m3g/Node.hpp"
+#include "Node.hpp"
 
 namespace m3g {
 

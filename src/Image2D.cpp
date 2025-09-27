@@ -1,8 +1,8 @@
-#include "m3g/m3g-gl.hpp"
-#include "m3g/Image2D.hpp"
-#include "m3g/Exception.hpp"
-#include "m3g/RenderState.hpp"
-#include "m3g/stb_image_writer.hpp"
+#include "m3g-gl.hpp"
+#include "Image2D.hpp"
+#include "Exception.hpp"
+#include "RenderState.hpp"
+#include "stb_image_writer.hpp"
 #include <iostream>
 #include <fstream>
 #include <cstring>

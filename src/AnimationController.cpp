@@ -1,6 +1,6 @@
 #include <iostream>
-#include "m3g/AnimationController.hpp"
-#include "m3g/Exception.hpp"
+#include "AnimationController.hpp"
+#include "Exception.hpp"
 using namespace std;
 using namespace m3g;
 

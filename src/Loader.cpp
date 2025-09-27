@@ -1,7 +1,7 @@
-#include "m3g/m3g.hpp"
-#include "m3g/stb_image_reader.hpp"
-#include "m3g/Config.hpp"
-#include "m3g/M3GReader.hpp"
+#include "m3g.hpp"
+#include "stb_image_reader.hpp"
+#include "Config.hpp"
+#include "M3GReader.hpp"
 #include <iostream>
 #include <fstream>
 #include <algorithm>

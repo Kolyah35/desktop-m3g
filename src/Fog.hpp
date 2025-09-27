@@ -2,7 +2,7 @@
 #define __M3G_FOG_HPP__
 
 #include <iostream>
-#include "m3g/Object3D.hpp"
+#include "Object3D.hpp"
 
 namespace m3g {
 

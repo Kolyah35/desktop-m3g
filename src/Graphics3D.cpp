@@ -1,13 +1,13 @@
 #include <iostream>
 #include <cmath>
-#include "m3g/m3g-gl.hpp"
-#include "m3g/Graphics3D.hpp"
-#include "m3g/World.hpp"
-#include "m3g/Image2D.hpp"
-#include "m3g/Loader.hpp"
-#include "m3g/Camera.hpp"
-#include "m3g/RenderState.hpp"
-#include "m3g/Exception.hpp"
+#include "m3g-gl.hpp"
+#include "Graphics3D.hpp"
+#include "World.hpp"
+#include "Image2D.hpp"
+#include "Loader.hpp"
+#include "Camera.hpp"
+#include "RenderState.hpp"
+#include "Exception.hpp"
 using namespace m3g;
 using namespace std;
 

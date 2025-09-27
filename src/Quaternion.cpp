@@ -1,8 +1,8 @@
-#include "m3g/Quaternion.hpp"
-#include "m3g/Exception.hpp"
-#include "m3g/m3ginternal.hpp"
-#include "m3g/Vector.hpp"
-#include "m3g/Matrix.hpp"
+#include "Quaternion.hpp"
+#include "Exception.hpp"
+#include "m3ginternal.hpp"
+#include "Vector.hpp"
+#include "Matrix.hpp"
 #include <iostream>
 #include <cmath>
 using namespace std;

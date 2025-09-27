@@ -3,9 +3,9 @@
 
 #include <iosfwd>
 #include <vector>
-#include "m3g/m3gdef.hpp"
-#include "m3g/m3ginternal.hpp"
-#include "m3g/Object.hpp"
+#include "m3gdef.hpp"
+#include "m3ginternal.hpp"
+#include "Object.hpp"
 
 namespace m3g {
 

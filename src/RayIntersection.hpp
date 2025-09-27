@@ -2,8 +2,8 @@
 #define __M3G_RAY_INTERSECTION_HPP__
 
 #include <iosfwd>
-#include "m3g/Object.hpp"
-#include "m3g/Vector.hpp"
+#include "Object.hpp"
+#include "Vector.hpp"
 
 #include <vector>
 

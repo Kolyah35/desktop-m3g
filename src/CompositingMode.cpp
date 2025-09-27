@@ -1,8 +1,8 @@
 #include <iostream>
-#include "m3g/m3g-gl.hpp"
-#include "m3g/CompositingMode.hpp"
-#include "m3g/Exception.hpp"
-#include "m3g/RenderState.hpp"
+#include "m3g-gl.hpp"
+#include "CompositingMode.hpp"
+#include "Exception.hpp"
+#include "RenderState.hpp"
 using namespace m3g;
 using namespace std;
 

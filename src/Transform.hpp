@@ -2,8 +2,8 @@
 #define __M3G_TRANSFORM_HPP__
 
 #include <iosfwd>
-#include "m3g/Matrix.hpp"
-#include "m3g/Object.hpp"
+#include "Matrix.hpp"
+#include "Object.hpp"
 
 namespace m3g {
 

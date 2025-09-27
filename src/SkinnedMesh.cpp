@@ -1,17 +1,17 @@
-#include "m3g/m3g-gl.hpp"
-#include "m3g/SkinnedMesh.hpp"
-#include "m3g/VertexBuffer.hpp"
-#include "m3g/IndexBuffer.hpp"
-#include "m3g/VertexArray.hpp"
-#include "m3g/Matrix.hpp"
-#include "m3g/Vector.hpp"
-#include "m3g/Exception.hpp"
-#include "m3g/World.hpp"
+#include "m3g-gl.hpp"
+#include "SkinnedMesh.hpp"
+#include "VertexBuffer.hpp"
+#include "IndexBuffer.hpp"
+#include "VertexArray.hpp"
+#include "Matrix.hpp"
+#include "Vector.hpp"
+#include "Exception.hpp"
+#include "World.hpp"
 #include <iostream>
 #include <vector>
 #include <cassert>
-#include "m3g/Group.hpp"
-#include "m3g/RayIntersection.hpp"
+#include "Group.hpp"
+#include "RayIntersection.hpp"
 using namespace std;
 using namespace m3g;
 

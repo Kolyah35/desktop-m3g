@@ -1,9 +1,9 @@
-#include "m3g/Transform.hpp"
-#include "m3g/Vector.hpp"
-#include "m3g/Exception.hpp"
-#include "m3g/Quaternion.hpp"
-#include "m3g/Vector.hpp"
-#include "m3g/VertexArray.hpp"
+#include "Transform.hpp"
+#include "Vector.hpp"
+#include "Exception.hpp"
+#include "Quaternion.hpp"
+#include "Vector.hpp"
+#include "VertexArray.hpp"
 #include <iostream>
 #include <cstring>
 #include <cmath>

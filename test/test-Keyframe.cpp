@@ -1,8 +1,8 @@
 #include <unittest++/UnitTest++.h>
 #include <iostream>
 #include <fstream>
-#include "m3g/Keyframe.hpp"
-#include "m3g/Quaternion.hpp"
+#include "Keyframe.hpp"
+#include "Quaternion.hpp"
 using namespace std;
 using namespace m3g;
 

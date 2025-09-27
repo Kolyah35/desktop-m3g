@@ -1,6 +1,6 @@
 #include <unittest++/UnitTest++.h>
 #include <iostream>
-#include "m3g/Loader.hpp"
+#include "Loader.hpp"
 using namespace std;
 using namespace m3g;
 

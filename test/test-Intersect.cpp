@@ -1,8 +1,8 @@
 #include <unittest++/UnitTest++.h>
 #include <iostream>
 #include <cmath>
-#include "m3g/Intersect.hpp"
-#include "m3g/Vector.hpp"
+#include "Intersect.hpp"
+#include "Vector.hpp"
 using namespace std;
 using namespace m3g;
 

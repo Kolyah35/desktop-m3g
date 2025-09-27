@@ -1,11 +1,11 @@
 #include <iostream>
-#include "m3g/m3g-gl.hpp"
-#include "m3g/Transformable.hpp"
-#include "m3g/Transform.hpp"
-#include "m3g/Exception.hpp"
-#include "m3g/AnimationTrack.hpp"
-#include "m3g/AnimationController.hpp"
-#include "m3g/KeyframeSequence.hpp"
+#include "m3g-gl.hpp"
+#include "Transformable.hpp"
+#include "Transform.hpp"
+#include "Exception.hpp"
+#include "AnimationTrack.hpp"
+#include "AnimationController.hpp"
+#include "KeyframeSequence.hpp"
 using namespace std;
 using namespace m3g;
 

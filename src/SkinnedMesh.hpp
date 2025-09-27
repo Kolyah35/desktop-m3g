@@ -1,8 +1,8 @@
 #ifndef __M3G_SKINNED_MESH_HPP__
 #define __M3G_SKINNED_MESH_HPP__
 
-#include "m3g/Mesh.hpp"
-#include "m3g/BoneWeight.hpp"
+#include "Mesh.hpp"
+#include "BoneWeight.hpp"
 #include <iosfwd>
 #include <vector>
 

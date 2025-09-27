@@ -1,6 +1,6 @@
 #include <unittest++/UnitTest++.h>
 #include <iostream>
-#include "m3g/m3g.hpp"
+#include "m3g.hpp"
 using namespace std;
 using namespace m3g;
 

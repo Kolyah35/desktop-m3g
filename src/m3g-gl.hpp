@@ -1,4 +1,4 @@
-#include "m3g/Config.hpp"
+#include "Config.hpp"
 
 #ifndef __M3G_GL_HPP__
     #define __M3G_GL_HPP__

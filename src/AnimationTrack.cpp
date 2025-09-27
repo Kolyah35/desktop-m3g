@@ -1,8 +1,8 @@
 #include <iostream>
-#include "m3g/AnimationTrack.hpp"
-#include "m3g/KeyframeSequence.hpp"
-#include "m3g/AnimationController.hpp"
-#include "m3g/Exception.hpp"
+#include "AnimationTrack.hpp"
+#include "KeyframeSequence.hpp"
+#include "AnimationController.hpp"
+#include "Exception.hpp"
 using namespace std;
 using namespace m3g;
 

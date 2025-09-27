@@ -1,5 +1,5 @@
-#include "m3g/m3ginternal.hpp"
-#include "m3g/m3gdef.hpp"
+#include "m3ginternal.hpp"
+#include "m3gdef.hpp"
 #include <limits>
 using namespace m3g;
 

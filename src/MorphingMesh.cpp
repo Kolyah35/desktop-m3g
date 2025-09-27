@@ -1,13 +1,13 @@
-#include "m3g/MorphingMesh.hpp"
-#include "m3g/VertexBuffer.hpp"
-#include "m3g/VertexArray.hpp"
-#include "m3g/IndexBuffer.hpp"
-#include "m3g/Appearance.hpp"
-#include "m3g/AnimationTrack.hpp"
-#include "m3g/AnimationController.hpp"
-#include "m3g/KeyframeSequence.hpp"
-#include "m3g/Vector.hpp"
-#include "m3g/Exception.hpp"
+#include "MorphingMesh.hpp"
+#include "VertexBuffer.hpp"
+#include "VertexArray.hpp"
+#include "IndexBuffer.hpp"
+#include "Appearance.hpp"
+#include "AnimationTrack.hpp"
+#include "AnimationController.hpp"
+#include "KeyframeSequence.hpp"
+#include "Vector.hpp"
+#include "Exception.hpp"
 #include <iostream>
 using namespace std;
 using namespace m3g;
