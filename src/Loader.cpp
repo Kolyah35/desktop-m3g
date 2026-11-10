@@ -1,51 +1,42 @@
 #include "m3g.hpp"
 #include "stb_image_reader.hpp"
-#include "Config.hpp"
 #include "M3GReader.hpp"
 #include <iostream>
 #include <fstream>
 #include <algorithm>
 #include <cstring>
+
 using namespace std;
 using namespace m3g;
 
 // M3G(JSR184) identifier
 const unsigned char m3g_sig[12] = {0xab, 0x4a, 0x53, 0x52, 0x31, 0x38, 0x34, 0xbb, 0x0d, 0x0a, 0x1a, 0x0a};
 
-Loader::Loader() : reader(NULL) {}
+Document Loader::loadDocument(std::vector<char>& buffer, int offset) {
+    if (offset < 0 || offset >= buffer.size()) {
+        throw IllegalArgumentException(__FILE__, __func__, "Offset is invalid, offset=%d, len=%lu.", offset, buffer.size());
+    }
 
-Loader::~Loader() {
-    delete reader;
-}
-
-std::vector<Object3D*> Loader::load(int length, const char* p, int offset) {
-    if (p == NULL) {
-        throw NullPointerException(__FILE__, __func__, "Pointer is Null.");
-    }
-    if (length <= 0) {
-        throw IllegalArgumentException(__FILE__, __func__, "Length is invalid, len=%d.", length);
-    }
-    if (offset < 0 || offset >= length) {
-        throw IllegalArgumentException(__FILE__, __func__, "Offset is invalid, offset=%d, len=%d.", offset, length);
-    }
+    char* p = buffer.data();
+    int length = static_cast<int>(buffer.size());
 
     p += offset;
     length -= offset;
 
-    Loader* loader = new Loader;
-    vector<Object3D*> objs;
+    Loader loader;
 
-    if (memcmp(p, m3g_sig, sizeof(m3g_sig)) == 0) {
-        objs = loader->load_m3g(p, length);
+    bool isM3g = memcmp(p, m3g_sig, sizeof(m3g_sig)) == 0;
+
+    if (isM3g) {
+        loader.load_m3g(p, length);
     } else {
-        objs = loader->load_image(p, length);
+        loader.load_image(p, length);
     }
 
-    delete loader;
-    return objs;
+    return std::move(loader.document);
 }
 
-std::vector<Object3D*> Loader::load(const char* file_name) {
+Document Loader::loadDocument(const char* file_name) {
     if (!file_name) {
         throw NullPointerException(__FILE__, __func__, "File name is Null.");
     }
@@ -59,23 +50,20 @@ std::vector<Object3D*> Loader::load(const char* file_name) {
     int size = ifs.tellg();
     ifs.seekg(0, std::ios::beg);
 
-    char* buf = new char[size];
-    ifs.read(buf, size);
+    std::vector<char> data(size);
+    ifs.read(data.data(), size);
 
-    vector<Object3D*> objs = load(size, buf, 0);
-
-    delete[] buf;
-    return objs;
+    return loadDocument(data);
 }
 
-std::vector<Object3D*> Loader::load_m3g(const char* p, int size) {
+void Loader::load_m3g(const char* p, int size) {
     // object indexは1から始まるので
     objs.push_back(0);
 
     int object_type;
     unsigned int object_index;
 
-    reader = new M3GReader(p, size);
+    reader = std::make_unique<M3GReader>(p, size);
 
     // M3G-ID
     reader->readID();
@@ -126,14 +114,12 @@ std::vector<Object3D*> Loader::load_m3g(const char* p, int size) {
     }
 
     objs.erase(remove(objs.begin(), objs.end(), (Object3D*)0), objs.end());
-
-    return objs;
 }
 
 /**
  * (注意) PNG画像は左上が(0,0)でM3Gは左下が(0,0)なので忘れずに上下をひっくり返すこと。
  */
-std::vector<Object3D*> Loader::load_image(const char* buffer, int size) {
+void Loader::load_image(const char* buffer, int size) {
     int width, height, comp;
     unsigned char* pixels = stbi_load_from_memory((unsigned char*)buffer, size, &width, &height, &comp, 0);
     if (pixels == NULL) {
@@ -155,10 +141,9 @@ std::vector<Object3D*> Loader::load_image(const char* buffer, int size) {
     }
     delete[] tmp;
 
-    objs.push_back(new Image2D(format, width, height, pixels));
+    objs.push_back(document.create<Image2D>(format, width, height, pixels));
 
     stbi_image_free(pixels);
-    return objs;
 }
 
 void Loader::parseHeader() {
@@ -174,7 +159,7 @@ void Loader::parseAnimationController() {
     reader->readObject3D(&obj);
     reader->readAnimationController(&ac);
 
-    AnimationController* anim_ctr = new AnimationController();
+    AnimationController* anim_ctr = document.create<AnimationController>();
     setObject3D(anim_ctr, obj);
     setAnimationController(anim_ctr, ac);
 
@@ -187,10 +172,10 @@ void Loader::parseAnimationTrack() {
     reader->readObject3D(&obj);
     reader->readAnimationTrack(&atrack);
 
-    KeyframeSequence* key_seq = dynamic_cast<KeyframeSequence*>(objs[atrack.keyframe_sequence_index]);
+    KeyframeSequence* key_seq = resolveReference<KeyframeSequence>(atrack.keyframe_sequence_index);
     unsigned int property = atrack.property_id;
 
-    AnimationTrack* anim_track = new AnimationTrack(key_seq, property);
+    AnimationTrack* anim_track = document.create<AnimationTrack>(key_seq, property);
     setObject3D(anim_track, obj);
     setAnimationTrack(anim_track, atrack);
 
@@ -203,7 +188,7 @@ void Loader::parseAppearance() {
     reader->readObject3D(&obj);
     reader->readAppearance(&ap);
 
-    Appearance* app = new Appearance();
+    Appearance* app = document.create<Appearance>();
     setObject3D(app, obj);
     setAppearance(app, ap);
 
@@ -216,7 +201,7 @@ void Loader::parseBackground() {
     reader->readObject3D(&obj);
     reader->readBackground(&bgrnd);
 
-    Background* bg = new Background();
+    Background* bg = document.create<Background>();
     setObject3D(bg, obj);
     setBackground(bg, bgrnd);
 
@@ -233,7 +218,7 @@ void Loader::parseCamera() {
     reader->readNode(&node);
     reader->readCamera(&cmr);
 
-    Camera* cam = new Camera();
+    Camera* cam = document.create<Camera>();
     setObject3D(cam, obj);
     setTransformable(cam, tra);
     setNode(cam, node);
@@ -248,7 +233,7 @@ void Loader::parseCompositingMode() {
     reader->readObject3D(&obj);
     reader->readCompositingMode(&cmp);
 
-    CompositingMode* cmode = new CompositingMode();
+    CompositingMode* cmode = document.create<CompositingMode>();
     setObject3D(cmode, obj);
     setCompositingMode(cmode, cmp);
 
@@ -261,7 +246,7 @@ void Loader::parseFog() {
     reader->readObject3D(&obj);
     reader->readFog(&fg);
 
-    Fog* fog = new Fog();
+    Fog* fog = document.create<Fog>();
     setObject3D(fog, obj);
     setFog(fog, fg);
 
@@ -274,7 +259,7 @@ void Loader::parsePolygonMode() {
     reader->readObject3D(&obj);
     reader->readPolygonMode(&pm);
 
-    PolygonMode* pmode = new PolygonMode();
+    PolygonMode* pmode = document.create<PolygonMode>();
     setObject3D(pmode, obj);
     setPolygonMode(pmode, pm);
 
@@ -291,7 +276,7 @@ void Loader::parseGroup() {
     reader->readNode(&node);
     reader->readGroup(&group);
 
-    Group* grp = new Group();
+    Group* grp = document.create<Group>();
     setObject3D(grp, obj);
     setTransformable(grp, tra);
     setNode(grp, node);
@@ -315,9 +300,9 @@ void Loader::parseImage2D() {
 
     Image2D* img;
     if (palette_count > 0) {
-        img = new Image2D(format, width, height, pixels, palette);
+        img = document.create<Image2D>(format, width, height, pixels, palette);
     } else {
-        img = new Image2D(format, width, height, pixels);
+        img = document.create<Image2D>(format, width, height, pixels);
     }
     setObject3D(img, obj);
     setImage2D(img, image);
@@ -341,9 +326,9 @@ void Loader::parseTriangleStripArray() {
 
     TriangleStripArray* tris;
     if (indices) {
-        tris = new TriangleStripArray(num_indices, indices, num_strips, strips);
+        tris = document.create<TriangleStripArray>(num_indices, indices, num_strips, strips);
     } else {
-        tris = new TriangleStripArray(start_index, num_strips, strips);
+        tris = document.create<TriangleStripArray>(start_index, num_strips, strips);
     }
 
     setObject3D(tris, obj);
@@ -363,7 +348,7 @@ void Loader::parseLight() {
     reader->readNode(&node);
     reader->readLight(&light);
 
-    Light* lgh = new Light();
+    Light* lgh = document.create<Light>();
     setObject3D(lgh, obj);
     setTransformable(lgh, tra);
     setNode(lgh, node);
@@ -378,7 +363,7 @@ void Loader::parseMaterial() {
     reader->readObject3D(&obj);
     reader->readMaterial(&material);
 
-    Material* mat = new Material();
+    Material* mat = document.create<Material>();
     setObject3D(mat, obj);
     setMaterial(mat, material);
 
@@ -395,19 +380,19 @@ void Loader::parseMesh() {
     reader->readNode(&node);
     reader->readMesh(&msh);
 
-    VertexBuffer* vertices = dynamic_cast<VertexBuffer*>(objs[msh.vertex_buffer_index]);
+    VertexBuffer* vertices = resolveReference<VertexBuffer>(msh.vertex_buffer_index);
     int num_submesh = msh.submesh_count;    // ファイルフォーマットで両者が
     int num_appearance = msh.submesh_count; // 等しいことが保証されている
     vector<IndexBuffer*> submeshs(num_submesh);
     vector<Appearance*> appearances(num_submesh);
     for (int i = 0; i < num_submesh; i++) {
-        submeshs[i] = dynamic_cast<IndexBuffer*>(objs[msh.index_buffer_index[i]]);
+        submeshs[i] = resolveReference<IndexBuffer>(msh.index_buffer_index[i]);
     }
     for (int i = 0; i < num_appearance; i++) {
-        appearances[i] = dynamic_cast<Appearance*>(objs[msh.appearance_index[i]]);
+        appearances[i] = resolveReference<Appearance>(msh.appearance_index[i]);
     }
 
-    Mesh* mesh = new Mesh(vertices, num_submesh, &submeshs[0], num_appearance, &appearances[0]);
+    Mesh* mesh = document.create<Mesh>(vertices, num_submesh, &submeshs[0], num_appearance, &appearances[0]);
     setObject3D(mesh, obj);
     setTransformable(mesh, tra);
     setNode(mesh, node);
@@ -428,24 +413,24 @@ void Loader::parseMorphingMesh() {
     reader->readMesh(&msh);
     reader->readMorphingMesh(&morph_msh);
 
-    VertexBuffer* vertices = dynamic_cast<VertexBuffer*>(objs[msh.vertex_buffer_index]);
+    VertexBuffer* vertices = resolveReference<VertexBuffer>(msh.vertex_buffer_index);
     int num_submesh = msh.submesh_count;
     int num_appearance = msh.submesh_count;
     vector<IndexBuffer*> submeshs(num_submesh);
     vector<Appearance*> appearances(num_submesh);
     for (int i = 0; i < num_submesh; i++) {
-        submeshs[i] = dynamic_cast<IndexBuffer*>(objs[msh.index_buffer_index[i]]);
+        submeshs[i] = resolveReference<IndexBuffer>(msh.index_buffer_index[i]);
     }
     for (int i = 0; i < num_appearance; i++) {
-        appearances[i] = dynamic_cast<Appearance*>(objs[msh.appearance_index[i]]);
+        appearances[i] = resolveReference<Appearance>(msh.appearance_index[i]);
     }
     int num_target = morph_msh.morph_target_count;
     vector<VertexBuffer*> targets(num_target);
     for (int i = 0; i < num_target; i++) {
-        targets[i] = dynamic_cast<VertexBuffer*>(objs[morph_msh.morph_target_index[i]]);
+        targets[i] = resolveReference<VertexBuffer>(morph_msh.morph_target_index[i]);
     }
 
-    MorphingMesh* mesh = new MorphingMesh(vertices, num_target, &targets[0], num_submesh, &submeshs[0], num_appearance, &appearances[0]);
+    MorphingMesh* mesh = document.create<MorphingMesh>(vertices, num_target, &targets[0], num_submesh, &submeshs[0], num_appearance, &appearances[0]);
     setObject3D(mesh, obj);
     setTransformable(mesh, tra);
     setNode(mesh, node);
@@ -467,21 +452,21 @@ void Loader::parseSkinnedMesh() {
     reader->readMesh(&msh);
     reader->readSkinnedMesh(&skin_msh);
 
-    VertexBuffer* vertices = dynamic_cast<VertexBuffer*>(objs[msh.vertex_buffer_index]);
+    VertexBuffer* vertices = resolveReference<VertexBuffer>(msh.vertex_buffer_index);
     int num_submesh = msh.submesh_count;
     int num_appearance = msh.submesh_count;
     vector<IndexBuffer*> submeshs(num_submesh);
     vector<Appearance*> appearances(num_submesh);
-    Group* skeleton = dynamic_cast<Group*>(objs[skin_msh.skeleton_index]);
+    Group* skeleton = resolveReference<Group>(skin_msh.skeleton_index);
 
     for (int i = 0; i < num_submesh; i++) {
-        submeshs[i] = dynamic_cast<IndexBuffer*>(objs[msh.index_buffer_index[i]]);
+        submeshs[i] = resolveReference<IndexBuffer>(msh.index_buffer_index[i]);
     }
     for (int i = 0; i < num_appearance; i++) {
-        appearances[i] = dynamic_cast<Appearance*>(objs[msh.appearance_index[i]]);
+        appearances[i] = resolveReference<Appearance>(msh.appearance_index[i]);
     }
 
-    SkinnedMesh* mesh = new SkinnedMesh(vertices, num_submesh, &submeshs[0], num_appearance, &appearances[0], skeleton);
+    SkinnedMesh* mesh = document.create<SkinnedMesh>(vertices, num_submesh, &submeshs[0], num_appearance, &appearances[0], skeleton);
     setObject3D(mesh, obj);
     setTransformable(mesh, tra);
     setNode(mesh, node);
@@ -499,9 +484,9 @@ void Loader::parseTexture2D() {
     reader->readTransformable(&tra);
     reader->readTexture2D(&texture);
 
-    Image2D* image = dynamic_cast<Image2D*>(objs[texture.image_index]);
+    Image2D* image = resolveReference<Image2D>(texture.image_index);
 
-    Texture2D* tex = new Texture2D(image);
+    Texture2D* tex = document.create<Texture2D>(image);
     setObject3D(tex, obj);
     setTransformable(tex, tra);
     setTexture2D(tex, texture);
@@ -518,10 +503,10 @@ void Loader::parseSprite3D() {
     reader->readSprite3D(&sprite);
 
     bool scaled = sprite.is_scaled;
-    Image2D* img = dynamic_cast<Image2D*>(objs[sprite.image_index]);
-    Appearance* app = dynamic_cast<Appearance*>(objs[sprite.appearance_index]);
+    Image2D* img = resolveReference<Image2D>(sprite.image_index);
+    Appearance* app = resolveReference<Appearance>(sprite.appearance_index);
 
-    Sprite3D* spr = new Sprite3D(scaled, img, app);
+    Sprite3D* spr = document.create<Sprite3D>(scaled, img, app);
     setObject3D(spr, obj);
     setTransformable(spr, tra);
     setSprite3D(spr, sprite);
@@ -539,7 +524,7 @@ void Loader::parseKeyframeSequence() {
     int num_components = keyframe_sequence.component_count;
     int interpolation = keyframe_sequence.interpolation;
 
-    KeyframeSequence* key_seq = new KeyframeSequence(num_keyframes, num_components, interpolation);
+    KeyframeSequence* key_seq = document.create<KeyframeSequence>(num_keyframes, num_components, interpolation);
     setObject3D(key_seq, obj);
     setKeyframeSequence(key_seq, keyframe_sequence);
 
@@ -556,7 +541,7 @@ void Loader::parseVertexArray() {
     int num_components = varray.component_count;
     int component_size = varray.component_size;
 
-    VertexArray* varry = new VertexArray(num_vertices, num_components, component_size);
+    VertexArray* varry = document.create<VertexArray>(num_vertices, num_components, component_size);
     setObject3D(varry, obj);
     setVertexArray(varry, varray);
 
@@ -569,7 +554,7 @@ void Loader::parseVertexBuffer() {
     reader->readObject3D(&obj);
     reader->readVertexBuffer(&vbuffer);
 
-    VertexBuffer* vbuf = new VertexBuffer();
+    VertexBuffer* vbuf = document.create<VertexBuffer>();
     setObject3D(vbuf, obj);
     setVertexBuffer(vbuf, vbuffer);
 
@@ -588,7 +573,7 @@ void Loader::parseWorld() {
     reader->readGroup(&grp);
     reader->readWorld(&world);
 
-    World* wld = new World();
+    World* wld = document.create<World>();
     setObject3D(wld, obj);
     setTransformable(wld, tra);
     setNode(wld, node);
@@ -603,11 +588,16 @@ void Loader::parseExternalReference() {
     reader->readExternalReference(&ext);
 
     if (ext.uri) {
-        vector<Object3D*> ext_objs = Loader::load(ext.uri);
-        if ((int)ext_objs.size() == 0) {
+        Document ext_objs = Loader::loadDocument(ext.uri);
+
+        if (ext_objs.size() == 0) {
             throw IOException(__FILE__, __func__, "ExternalReference has no M3G objects.");
         }
-        objs.push_back(ext_objs[0]);
+
+        Object3D* root = ext_objs.findFirst<Object3D>();
+
+        document.merge(std::move(ext_objs));
+        objs.push_back(root);
     }
 }
 
@@ -618,7 +608,7 @@ void Loader::setObject3D(Object3D* obj, const M3GObject3DStruct& object) const {
 
     obj->setUserID(user_id);
     for (int i = 0; i < anim_track_count; i++) {
-        AnimationTrack* anim_track = dynamic_cast<AnimationTrack*>(objs[object.animation_tracks_index[i]]);
+        AnimationTrack* anim_track = resolveReference<AnimationTrack>(object.animation_tracks_index[i]);
         obj->addAnimationTrack(anim_track);
     }
     if (user_parameter_count > 0) {
@@ -632,16 +622,18 @@ void Loader::setObject3D(Object3D* obj, const M3GObject3DStruct& object) const {
 
 void Loader::setAppearance(Appearance* app, const M3GAppearanceStruct& appearance) const {
     int layer = appearance.layer;
-    CompositingMode* cmode = dynamic_cast<CompositingMode*>(objs[appearance.compositing_mode_index]);
-    PolygonMode* pmode = dynamic_cast<PolygonMode*>(objs[appearance.polygon_mode_index]);
-    Material* mat = dynamic_cast<Material*>(objs[appearance.material_index]);
+    CompositingMode* cmode = resolveReference<CompositingMode>(appearance.compositing_mode_index);
+    PolygonMode* pmode = resolveReference<PolygonMode>(appearance.polygon_mode_index);
+    Material* mat = resolveReference<Material>(appearance.material_index);
+    Fog* fog = resolveReference<Fog>(appearance.fog_index);
     int textures_count = appearance.textures_count;
     app->setLayer(layer);
     app->setCompositingMode(cmode);
     app->setPolygonMode(pmode);
     app->setMaterial(mat);
+    app->setFog(fog);
     for (int i = 0; i < textures_count; i++) {
-        Texture2D* tex = dynamic_cast<Texture2D*>(objs[appearance.textures_index[i]]);
+        Texture2D* tex = resolveReference<Texture2D>(appearance.textures_index[i]);
         app->setTexture(i, tex);
     }
 }
@@ -654,13 +646,13 @@ void Loader::setAnimationController(AnimationController* anim_ctr, const M3GAnim
 }
 
 void Loader::setAnimationTrack(AnimationTrack* anim_track, const M3GAnimationTrackStruct& at) const {
-    AnimationController* anim_ctr = dynamic_cast<AnimationController*>(objs[at.animation_controller_index]);
+    AnimationController* anim_ctr = resolveReference<AnimationController>(at.animation_controller_index);
     anim_track->setController(anim_ctr);
 }
 
 void Loader::setBackground(Background* bg, const M3GBackgroundStruct& bgr) const {
     int argb = bgr.background_color;
-    Image2D* img = dynamic_cast<Image2D*>(objs[bgr.background_image_index]);
+    Image2D* img = resolveReference<Image2D>(bgr.background_image_index);
     int mode_x = bgr.background_image_mode_x;
     int mode_y = bgr.background_image_mode_y;
     int crop_x = bgr.crop_x;
@@ -733,7 +725,7 @@ void Loader::setFog(Fog* fog, const M3GFogStruct& fg) const {
 void Loader::setGroup(Group* grp, const M3GGroupStruct& group) const {
     int child_count = group.children_index_count;
     for (int i = 0; i < child_count; i++) {
-        Node* node = dynamic_cast<Node*>(objs[group.children_index[i]]);
+        Node* node = resolveReference<Node>(group.children_index[i]);
         if (node) {
             grp->addChild(node);
         }
@@ -823,8 +815,8 @@ void Loader::setNode(Node* node, const M3GNodeStruct& nod) const {
     if (has_alignment) {
         int z_target = nod.z_target;
         int y_target = nod.y_target;
-        Node* z_ref = dynamic_cast<Node*>(objs[nod.z_reference_index]);
-        Node* y_ref = dynamic_cast<Node*>(objs[nod.y_reference_index]);
+        Node* z_ref = resolveReference<Node>(nod.z_reference_index);
+        Node* y_ref = resolveReference<Node>(nod.y_reference_index);
         node->setAlignment(z_ref, z_target, y_ref, y_target);
     }
 }
@@ -848,7 +840,7 @@ void Loader::setPolygonMode(PolygonMode* pmode, const M3GPolygonModeStruct& poly
 void Loader::setSkinnedMesh(SkinnedMesh* mesh, const M3GSkinnedMeshStruct& msh) const {
     int transform_reference_count = msh.transform_reference_count;
     for (int i = 0; i < transform_reference_count; i++) {
-        Node* node = dynamic_cast<Node*>(objs[msh.transform_node_index[i]]);
+        Node* node = resolveReference<Node>(msh.transform_node_index[i]);
         int weight = msh.weight[i];
         int first_vertex = msh.first_vertex[i];
         int num_vertices = msh.vertex_count[i];
@@ -928,9 +920,9 @@ void Loader::setVertexBuffer(VertexBuffer* vbuf, const M3GVertexBufferStruct& vb
     int default_color = vbuffer.default_color;
     float position_scale = vbuffer.position_scale;
     float position_bias[3] = {vbuffer.position_bias[0], vbuffer.position_bias[1], vbuffer.position_bias[2]};
-    VertexArray* colors = dynamic_cast<VertexArray*>(objs[vbuffer.colors_index]);
-    VertexArray* normals = dynamic_cast<VertexArray*>(objs[vbuffer.normals_index]);
-    VertexArray* positions = dynamic_cast<VertexArray*>(objs[vbuffer.positions_index]);
+    VertexArray* colors = resolveReference<VertexArray>(vbuffer.colors_index);
+    VertexArray* normals = resolveReference<VertexArray>(vbuffer.normals_index);
+    VertexArray* positions = resolveReference<VertexArray>(vbuffer.positions_index);
     int texcoord_count = vbuffer.texcoord_array_count;
 
     if (positions) {
@@ -948,7 +940,7 @@ void Loader::setVertexBuffer(VertexBuffer* vbuf, const M3GVertexBufferStruct& vb
     }
     vbuf->setDefaultColor(default_color);
     for (int i = 0; i < texcoord_count; i++) {
-        VertexArray* tex_coords = dynamic_cast<VertexArray*>(objs[vbuffer.texcoords_index[i]]);
+        VertexArray* tex_coords = resolveReference<VertexArray>(vbuffer.texcoords_index[i]);
         float texcoord_scale = vbuffer.texcoord_scale[i];
         float texcoord_bias[3] = {vbuffer.texcoord_bias[i][0], vbuffer.texcoord_bias[i][1], vbuffer.texcoord_bias[i][2]};
         if (tex_coords->getComponentType() == 1) {
@@ -959,8 +951,8 @@ void Loader::setVertexBuffer(VertexBuffer* vbuf, const M3GVertexBufferStruct& vb
 }
 
 void Loader::setWorld(World* wld, const M3GWorldStruct& world) const {
-    Camera* cam = dynamic_cast<Camera*>(objs[world.active_camera_index]);
-    Background* bg = dynamic_cast<Background*>(objs[world.background_index]);
+    Camera* cam = resolveReference<Camera>(world.active_camera_index);
+    Background* bg = resolveReference<Background>(world.background_index);
 
     if (cam) {
         wld->setActiveCamera(cam);

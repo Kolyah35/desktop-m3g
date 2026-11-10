@@ -7,7 +7,6 @@
 using namespace std;
 using namespace m3g;
 
-std::vector<Object3D*> objs;
 World* wld = nullptr;
 int fovy;
 float near;
@@ -84,26 +83,12 @@ static void mouse(int button, int state, int x, int y) {
 int main(int, char** argv) {
     sample::App sampleApp(argv[0], "sample-12-loader", 300, 300);
 
-    // objs = Loader::load ("../simple.m3g");
-    // objs = Loader::load ("../checker-board.m3g");
-    objs = Loader::load(sampleApp.asset("kitune-miko.m3g").string().c_str());
-    // objs = Loader::load ("../mahosyojo-with-sexy-walking.m3g");
+    // auto document = Loader::loadDocument(sampleApp.asset("simple.m3g").string().c_str());
+    auto document = Loader::loadDocument(sampleApp.asset("test.m3g").string().c_str());
+    // auto document = Loader::loadDocument(sampleApp.asset("kitune-miko.m3g").string().c_str());
 
-    for (int i = 0; i < (int)objs.size(); i++) {
-        wld = dynamic_cast<World*>(objs[i]);
-        if (wld) {
-            cout << *wld << "\n";
-            break;
-        }
-    }
-
-    for (int i = 0; i < (int)objs.size(); i++) {
-        cout << i << " : " << *objs[i] << "\n";
-        VertexArray* varry = dynamic_cast<VertexArray*>(objs[i]);
-        if (varry) {
-            varry->print_raw_data(cout) << "\n";
-        }
-    }
+    wld = document.findFirst<m3g::World>();
+    auto varry = document.findFirst<m3g::VertexArray>();
 
     Camera* cam = wld->getActiveCamera();
     float params[4];
@@ -122,9 +107,6 @@ int main(int, char** argv) {
     bg->setColor(0xff3f7fff);
     sampleApp.run(display, reshape, keyboard, idle, mouse);
 
-    for (auto* obj : objs) {
-        delete obj;
-    }
     delete Graphics3D::getInstance();
 
     return 0;

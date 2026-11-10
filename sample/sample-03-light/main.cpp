@@ -118,7 +118,9 @@ int main(int, char** argv) {
     Appearance* app = new Appearance();
     app->setMaterial(mat);
 
-    Image2D* img = dynamic_cast<Image2D*>(Loader::load(sampleApp.asset("kingyo.png").string().c_str())[0]);
+    auto document = m3g::Loader::loadDocument(sampleApp.asset("kingyo.png").string().c_str());
+
+    Image2D* img = document.findFirst<Image2D>();
     tex = new Texture2D(img);
     app->setTexture(0, tex);
 

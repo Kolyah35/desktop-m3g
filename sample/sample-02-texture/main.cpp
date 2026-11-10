@@ -54,10 +54,14 @@ int main(int, char** argv) {
     int strips[] = {3, 3};
     TriangleStripArray* tris = new TriangleStripArray(6, indices, 2, strips);
 
-    Image2D* img0 = dynamic_cast<Image2D*>(Loader::load(sampleApp.asset("yumemi.png").string().c_str())[0]);
+    auto document = Loader::loadDocument(sampleApp.asset("yumemi.png").string().c_str());
+
+    Image2D* img0 = document.findFirst<Image2D>();
     Texture2D* tex0 = new Texture2D(img0);
 
-    Image2D* img1 = dynamic_cast<Image2D*>(Loader::load(sampleApp.asset("onnanoko.png").string().c_str())[0]);
+    document = Loader::loadDocument(sampleApp.asset("onnanoko.png").string().c_str());
+
+    Image2D* img1 = document.findFirst<Image2D>();
     Texture2D* tex1 = new Texture2D(img1);
     tex1->setBlending(Texture2D::FUNC_DECAL);
 

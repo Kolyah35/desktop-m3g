@@ -35,11 +35,11 @@ namespace sample {
 #if defined(_WIN32)
             wchar_t path[FILENAME_MAX] = {0};
             GetModuleFileNameW(nullptr, path, FILENAME_MAX);
-            return std::filesystem::path(path);
+            return std::filesystem::path(path).parent_path();
 #else
             char path[FILENAME_MAX];
             ssize_t count = readlink("/proc/self/exe", path, FILENAME_MAX);
-            return std::filesystem::path(std::string(path, (count > 0) ? count : 0));
+            return std::filesystem::path(std::string(path, (count > 0) ? count : 0)).parent_path();
 #endif
 
             return argv0 && *argv0 ? std::filesystem::absolute(argv0).parent_path() : std::filesystem::current_path();

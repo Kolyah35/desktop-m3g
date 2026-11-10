@@ -32,6 +32,10 @@ typedef int IndexType;
 const int INDEX_MAX = INT_MAX;
 const int INDEX_TYPE = GL_UNSIGNED_INT;
 
+    #ifdef glOrthof
+    #undef glOrthof
+    #endif
+
     #define glOrthof glOrtho
     #endif // USE_GL
 

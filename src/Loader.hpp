@@ -4,6 +4,8 @@
 #include <vector>
 #include "m3g.hpp"
 #include "M3GReader.hpp"
+#include "Document.hpp"
+#include "Exception.hpp"
 
 namespace m3g {
 
@@ -20,20 +22,20 @@ namespace m3g {
          * @~English  Deserializes Object3D instances form the given byte array.
          * @~Japanese 与えられたバイトストリームのオフセット位置からObject3Dのインスタンスを生成する.
          */
-        static std::vector<Object3D*> load(int length, const char* p, int offset);
+        static Document loadDocument(std::vector<char>& buffer, int offset = 0);
 
         /**
          * @~English  Deserializes Object3D instances from the named resource.
          * @~Japanese 与えられた名前のリソースからObject3Dのインスタンスを生成する.
          */
-        static std::vector<Object3D*> load(const char* file_name);
+        static Document loadDocument(const char* file_name);
 
     private:
-        Loader();
-        ~Loader();
+        Loader() = default;
+        ~Loader() = default;
 
-        std::vector<Object3D*> load_m3g(const char* p, int size);
-        std::vector<Object3D*> load_image(const char* p, int size);
+        void load_m3g(const char* p, int size);
+        void load_image(const char* p, int size);
 
         void parseHeader();
         void parseAnimationController();
@@ -87,9 +89,28 @@ namespace m3g {
         void setVertexBuffer(VertexBuffer* vbuf, const M3GVertexBufferStruct& vertex_buffer) const;
         void setWorld(World* wld, const M3GWorldStruct& world) const;
 
+        template<typename T>
+        T* resolveReference(unsigned int index) const {
+            if (index == 0) return nullptr;
+
+            if (index >= objs.size()) {
+                throw IOException(__FILE__, __func__, "Invalid object index: %u", index);
+            }
+
+            T* result = dynamic_cast<T*>(objs[index]);
+
+            if (!result) {
+                throw IOException(__FILE__, __func__, "Invalid object type at index: %u", index);
+            }
+
+            return result;
+        }
+
     private:
-        m3g::M3GReader* reader;
+        std::unique_ptr<m3g::M3GReader> reader;
         std::vector<Object3D*> objs;
+
+        Document document;
     };
 
 } // namespace m3g

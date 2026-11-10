@@ -80,7 +80,9 @@ int main(int, char** argv) {
     wld->setActiveCamera(cam);
     wld->addChild(mesh);
 
-    Image2D* img = dynamic_cast<Image2D*>(Loader::load(sampleApp.asset("music-is.png").string().c_str())[0]);
+    auto document = Loader::loadDocument(sampleApp.asset("music-is.png").string().c_str());
+
+    Image2D* img = document.findFirst<Image2D>();
     Background* bg = new Background();
     bg->setColor(0xff3f8f1f);
     bg->setImage(img);
@@ -102,9 +104,6 @@ int main(int, char** argv) {
     objs.push_back(bg);
     sampleApp.run(display, reshape, keyboard);
 
-    for (auto* obj : objs) {
-        delete obj;
-    }
     delete Graphics3D::getInstance();
 
     return 0;

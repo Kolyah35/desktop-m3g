@@ -8,8 +8,7 @@
 using namespace std;
 using namespace m3g;
 
-M3GReader::M3GReader(const char* name)
-    : stream(0), file_name(name), object_index(1), start_of_section(0), size_of_object(0), total_section_length(0), uncompressed_objects_length(0) {
+M3GReader::M3GReader(const char* name) {
     stream = new InMemoryStream(name);
 }
 
@@ -51,11 +50,9 @@ bool M3GReader::startSection() {
     unsigned int file_checksum = getUInt32();
     unsigned int init_value = adler32(0, NULL, 0);
     unsigned int checksum = adler32(init_value, stream->pointer(start_of_section), total_section_length - 4);
-    if (checksum != file_checksum) {
-        cout << "M3GReader: Checksum error.\n";
-        cout << " Perhaps, this file is broken.\n";
-        abort();
-    }
+    
+    // Checksum error. If asserts, file is broken.
+    assert(checksum == file_checksum);
 
     stream->seekg(start_of_section + 9);
 
@@ -98,14 +95,8 @@ bool M3GReader::startObject(int* object_type, unsigned int* object_index_out) {
 void M3GReader::endObject() {
     unsigned int end_of_object = stream->tellg();
 
-    if (end_of_object - (start_of_object + 5) != size_of_object) {
-        cout << "M3GReader: object size error.\n";
-        cout << "  Perhaps, illegal usage of M3GReader.\n";
-        cout << "  file's written size  = " << size_of_object << "\n";
-        cout << "  your start_of_object = " << start_of_object << "\n";
-        cout << "  your end_of_object   = " << end_of_object << "\n";
-        abort();
-    }
+    // If asserts, its an object size error. Perhaps, illegal usage of M3GReader.
+    assert(end_of_object - (start_of_object + 5) == size_of_object);
 }
 
 void M3GReader::readHeader(M3GHeaderStruct* header) {
@@ -575,16 +566,17 @@ void M3GReader::readWorld(M3GWorldStruct* world) {
     world->background_index = getUInt32();
 }
 
-void M3GReader::readString(const char** str) {
-    char* buf = new char[256];
-    memset(buf, 0, 256);
-    for (int i = 0; i < 255; i++) {
-        buf[i] = getByte();
-        if (buf[i] == '\0') {
-            break;
-        }
-    }
-    *str = buf;
+std::string M3GReader::readString() {
+    std::string ret;
+
+    char c;
+
+    do {
+        c = getByte();
+        ret.push_back(c);
+    } while (c != '\0');
+    
+    return ret;
 }
 
 bool M3GReader::getBoolean() {
@@ -707,6 +699,7 @@ InMemoryStream::~InMemoryStream() {}
 
 void InMemoryStream::read(char* p, int size) {
     assert(p != 0);
+    assert(buf.size() - cur >= size);
 
     memcpy(p, &buf[cur], size);
     cur += size;

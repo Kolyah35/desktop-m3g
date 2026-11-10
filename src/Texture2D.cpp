@@ -242,8 +242,8 @@ void Texture2D::render_xxx(RenderState& state) const {
     // マトリックスパレットの設定
     Transformable::render_xxx(state);
 
-    GLfloat color[4] = {((blend_color && 0x00ff0000) >> 16) / 255.f, ((blend_color && 0x0000ff00) >> 8) / 255.f, ((blend_color && 0x000000ff) >> 0) / 255.f,
-                        ((blend_color && 0xff000000) >> 24) / 255.f};
+    GLfloat color[4] = {((blend_color & 0x00ff0000) >> 16) / 255.f, ((blend_color & 0x0000ff00) >> 8) / 255.f, ((blend_color & 0x000000ff) >> 0) / 255.f,
+                        ((blend_color & 0xff000000) >> 24) / 255.f};
 
     switch (blending_mode) {
         case FUNC_ADD: glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_ADD); break;

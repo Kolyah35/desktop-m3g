@@ -3,6 +3,7 @@
 
 #include "M3GStruct.hpp"
 #include <vector>
+#include <string>
 
 namespace m3g {
 
@@ -51,8 +52,8 @@ namespace m3g {
         void readVertexArray(M3GVertexArrayStruct* vertex_array);
         void readVertexBuffer(M3GVertexBufferStruct* vertex_buffer);
         void readWorld(M3GWorldStruct* world);
-        void readString(const char** str);
 
+        std::string readString();
         bool getBoolean();
         unsigned char getUByte();
         char getByte();
@@ -69,16 +70,16 @@ namespace m3g {
         char* getString();
 
     private:
-        m3g::InMemoryStream* stream;
+        m3g::InMemoryStream* stream = nullptr;
 
-        const char* file_name;
-        unsigned int object_index;
-        unsigned int start_of_section;
-        unsigned int start_of_object;
-        unsigned int size_of_object;
+        const char* file_name = nullptr;
+        unsigned int object_index = 1;
+        unsigned int start_of_section = 0;
+        unsigned int start_of_object = 0;
+        unsigned int size_of_object = 0;
 
-        unsigned int total_section_length;
-        unsigned long uncompressed_objects_length; // must be 8 byte for zlib's uncompress
+        unsigned int total_section_length = 0;
+        unsigned long uncompressed_objects_length = 0; // must be 8 byte for zlib's uncompress
     };
 
     /**

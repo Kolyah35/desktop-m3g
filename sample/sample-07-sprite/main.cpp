@@ -60,7 +60,9 @@ int main(int, char** argv) {
     Background* bg = new Background();
     bg->setColor(0xff1f1f7f);
 
-    Image2D* img = dynamic_cast<Image2D*>(Loader::load(sampleApp.asset("mizugi-small.png").string().c_str())[0]);
+    auto document = Loader::loadDocument(sampleApp.asset("mizugi-small.png").string().c_str());
+
+    Image2D* img = document.findFirst<Image2D>();
     int width = img->getWidth();
     int height = img->getHeight();
 
