@@ -22,21 +22,17 @@
     //   定義しても動作に問題はない
     // - 2011.02.23 gluは必要無くなったのでコメントアウト.
     #ifdef USE_GL
-        #ifndef GL_GLEXT_PROTOTYPES
-            #define GL_GLEXT_PROTOTYPES
-        #endif
-        #include <GL/gl.h>
-        #include <GL/glext.h>
+        // #ifndef GL_GLEXT_PROTOTYPES
+        //     #define GL_GLEXT_PROTOTYPES
+        // #endif
+        #include <glad/glad.h>
 
         #include <climits>
 typedef int IndexType;
 const int INDEX_MAX = INT_MAX;
 const int INDEX_TYPE = GL_UNSIGNED_INT;
 
-// quick hack
-inline static void glOrthof(GLdouble left, GLdouble right, GLdouble bottom, GLdouble top, GLdouble near_val, GLdouble far_val) {
-    glOrtho(left, right, bottom, top, near_val, far_val);
-}
+    #define glOrthof glOrtho
     #endif // USE_GL
 
     // =====  Android =====

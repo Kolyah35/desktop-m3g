@@ -3,7 +3,8 @@
 #include "Exception.hpp"
 #include <iostream>
 #include <cstring>
-#include <cmath>
+#define _USE_MATH_DEFINES
+#include <math.h>
 
 using namespace std;
 using namespace m3g;

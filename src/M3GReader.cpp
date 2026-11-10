@@ -687,6 +687,7 @@ char* M3GReader::getString() {
 InMemoryStream::InMemoryStream(const char* name) : cur(0) {
     assert(name != 0);
 
+    //  uhm should we put std::ios::binary here?
     ifstream ifs(name);
     // assert (ifs != 0);
 

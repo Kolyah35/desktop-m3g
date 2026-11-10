@@ -3,18 +3,28 @@
 # =================================
 
 # required cmake
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.21)
 
 # project info
-project(M3G)
+project(desktop_m3g LANGUAGES C CXX)
 
 # =================================
 # Avairable options
 # =================================
-option(USE_GL "Set ON, if you use OpenGL (default ON)" ON)
-option(USE_GL_ES "Set ON, if you use OpenGL ES (default OFF)" OFF)
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/src/Config.hpp.in
-    ${CMAKE_CURRENT_BINARY_DIR}/src/Config.hpp)
+option(USE_GL "Build the desktop OpenGL backend" ON)
+option(USE_GL_ES "Build the OpenGL ES 1 backend (legacy)" OFF)
+option(BUILD_SAMPLES "Build the GLFW samples" ON)
+option(M3G_BUILD_SHARED "Build M3G as a shared library" OFF)
+option(M3G_FETCH_ZLIB "Fetch zlib if no system installation is found" ON)
+
+if(USE_GL AND USE_GL_ES)
+    message(FATAL_ERROR "USE_GL and USE_GL_ES are mutually exclusive")
+elseif(NOT USE_GL AND NOT USE_GL_ES)
+    message(FATAL_ERROR "Select USE_GL or USE_GL_ES")
+endif()
+if(BUILD_SAMPLES AND NOT USE_GL)
+    message(FATAL_ERROR "The desktop GLFW samples require USE_GL=ON")
+endif()
 
 # ================================
 # Default Build is "Debug"
@@ -41,27 +51,32 @@ endif(CMAKE_BUILD_TYPE STREQUAL "Release")
 # dependend libraries
 # ==================================
 
-# libz.so, libpng.so, libjpeg.so, ligGL.so
-find_package(ZLIB REQUIRED)
-if(USE_GL)
-    message(STATUS "Linking libGL.so ...")
-    find_package(OpenGL REQUIRED)
-endif(USE_GL)
+find_package(ZLIB QUIET)
+if(NOT ZLIB_FOUND)
+    if(NOT M3G_FETCH_ZLIB)
+        message(FATAL_ERROR "zlib not found: install zlib or enable M3G_FETCH_ZLIB")
+    endif()
+    include(cmake/CPM.cmake)
 
+    CPMAddPackage("gh:madler/zlib@1.4")
+endif()
 
-set(M3G_REQUIRED_LIBRARIES
-    ${ZLIB_LIBRARIES}
-    ${OPENGL_LIBRARIES})
-set(M3G_REQUIRED_INCLUDE_DIR
-    ${ZLIB_INCLUDE_DIR}
-    ${OPENGL_INCLUDE_DIR})
+CPMAddPackage("gh:unittest-cpp/unittest-cpp@2.0.0")
+
+set(M3G_REQUIRED_LIBRARIES zlibstatic UnitTest++)
+set(M3G_REQUIRED_INCLUDE_DIR ${zlib_SOURCE_DIR} ${CMAKE_SOURCE_DIR}/glad/include "${unittest-cpp_SOURCE_DIR}")
 
 
 # =============================
 # project src
 # =============================
+configure_file(src/Config.hpp.in "${PROJECT_BINARY_DIR}/generated/Config.hpp")
+
 add_subdirectory(src)
 
+if (BUILD_SAMPLES)
+    add_subdirectory(sample)
+endif()
 
 # ================================
 # Confirm current configuration

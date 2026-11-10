@@ -1,17 +1,16 @@
+#include "sample_app.hpp"
 #include "m3g.hpp"
-#include <GL/glut.h>
 #include <iostream>
 #include <vector>
 using namespace std;
 using namespace m3g;
 
 std::vector<Object3D*> objs;
-World* wld = NULL;
+World* wld = nullptr;
 
 static void display(void) {
     Graphics3D* g3d = Graphics3D::getInstance();
     g3d->render(wld);
-    glutSwapBuffers();
 }
 
 static void reshape(int width, int height) {
@@ -21,28 +20,17 @@ static void reshape(int width, int height) {
     cam->setPerspective(45, width / (float)height, 0.1, 100);
 }
 
-static void quit() {
-    for (int i = 0; i < (int)objs.size(); i++) {
-        delete objs[i];
-    }
-    Graphics3D* g3d = Graphics3D::getInstance();
-    delete g3d;
-    exit(0);
-}
+static void quit() { sample::requestClose(); }
 
 static void keyboard(unsigned char key, int x, int y) {
     switch (key) {
         case 'q': quit(); break;
         default: break;
     }
-    glutPostRedisplay();
 }
 
-int main(int argc, char** argv) {
-    glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_RGBA | GLUT_DEPTH | GLUT_DOUBLE);
-    glutCreateWindow(argv[0]);
-    glutInitWindowSize(300, 300);
+int main(int, char** argv) {
+    sample::App sampleApp(argv[0], "sample-01-simple", 300, 300);
 
     VertexArray* positions = new VertexArray(4, 3, 2);
     short positions_value[] = {1, -1, 0, 1, 1, 0, -1, -1, 0, -1, 1, 0};
@@ -64,7 +52,6 @@ int main(int argc, char** argv) {
     app->setMaterial(mat);
 
     Mesh* mesh = new Mesh(vertices, tris, app);
-    cout << "GL_MAX_TEXTURE_UNITS = " << GL_MAX_TEXTURE_UNITS << "\n";
 
     Camera* cam = new Camera();
     cam->translate(0, 0, 5);
@@ -77,8 +64,8 @@ int main(int argc, char** argv) {
     cout << *wld << "\n";
 
     int num = 0;
-    glGetIntegerv(GL_MAX_TEXTURE_UNITS, &num);
-    cout << "GL_MAX_TEXTURE_UNITS = " << num << "\n";
+    glGetIntegerv(GL_MAX_TEXTURE_SIZE, &num);
+    cout << "GL_MAX_TEXTURE_SIZE = " << num << "\n";
 
     objs.push_back(positions);
     objs.push_back(vertices);
@@ -88,11 +75,12 @@ int main(int argc, char** argv) {
     objs.push_back(cam);
     objs.push_back(mesh);
     objs.push_back(wld);
+    sampleApp.run(display, reshape, keyboard);
 
-    glutKeyboardFunc(keyboard);
-    glutDisplayFunc(display);
-    glutReshapeFunc(reshape);
-    glutMainLoop();
+    for (auto* obj : objs) {
+        delete obj;
+    }
+    delete Graphics3D::getInstance();
 
     return 0;
 }

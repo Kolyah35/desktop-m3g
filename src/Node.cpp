@@ -6,7 +6,8 @@
 #include "RenderState.hpp"
 #include "Vector.hpp"
 #include <iostream>
-#include <cmath>
+#define _USE_MATH_DEFINES
+#include <math.h>
 using namespace std;
 using namespace m3g;
 

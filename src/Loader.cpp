@@ -50,7 +50,7 @@ std::vector<Object3D*> Loader::load(const char* file_name) {
         throw NullPointerException(__FILE__, __func__, "File name is Null.");
     }
 
-    ifstream ifs(file_name);
+    ifstream ifs(file_name, std::ios::binary);
     if (!ifs) {
         throw IOException(__FILE__, __func__, "Can't open the file, name=%s.", file_name);
     }

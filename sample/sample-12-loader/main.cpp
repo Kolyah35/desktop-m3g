@@ -1,30 +1,23 @@
+#include "sample_app.hpp"
 #include "m3g.hpp"
-#include <GL/glut.h>
 #include <iostream>
 #include <vector>
 #include <cmath>
+#include <numbers>
 using namespace std;
 using namespace m3g;
 
 std::vector<Object3D*> objs;
-World* wld = NULL;
+World* wld = nullptr;
 int fovy;
 float near;
 float far;
-
-static void draw_string(int x, int y, const char* s) {
-    while (*s) {
-        glWindowPos2i(x += 8, y);
-        glutBitmapCharacter(GLUT_BITMAP_8_BY_13, *s++);
-    }
-}
 
 static void display(void) {
     Graphics3D* g3d = Graphics3D::getInstance();
     g3d->render(wld);
 
-    draw_string(10, 287, "space : pause/resume");
-    glutSwapBuffers();
+    sample::drawText(10, 14, "space : pause/resume");
 }
 
 static void reshape(int width, int height) {
@@ -34,21 +27,14 @@ static void reshape(int width, int height) {
     cam->setPerspective(45, width / (float)height, 0.1, 1000);
 }
 
-static void quit() {
-    for (int i = 0; i < (int)objs.size(); i++) {
-        delete objs[i];
-    }
-    Graphics3D* g3d = Graphics3D::getInstance();
-    delete g3d;
-    exit(0);
-}
+static void quit() { sample::requestClose(); }
 
 int world_time = 0;
 bool stopped = true;
 float angle = 0;
 
 float rad(float degree) {
-    return degree / (180.0 / M_PI);
+    return degree / (180.0 / std::numbers::pi_v<double>);
 }
 
 static int frame = 0;
@@ -69,8 +55,6 @@ void idle() {
     // cam->lookAt (from_x, from_y, from_z,
     //             0, 0, 0,
     //             0, 1, 0);
-
-    glutPostRedisplay();
 }
 
 static void keyboard(unsigned char key, int x, int y) {
@@ -83,7 +67,6 @@ static void keyboard(unsigned char key, int x, int y) {
             break;
         default: break;
     }
-    glutPostRedisplay();
 }
 
 static void mouse(int button, int state, int x, int y) {
@@ -91,22 +74,19 @@ static void mouse(int button, int state, int x, int y) {
     float width = g3d->getViewportWidth();
     float height = g3d->getViewportHeight();
     Camera* cam = wld->getActiveCamera();
-    if (state == 0) {
+    if (button == 0 && state == 0) {
         RayIntersection ri;
         bool hit = wld->pick(-1, x / width, y / height, cam, &ri);
         cout << ((hit) ? "HIT!" : "miss") << "\n";
     }
 }
 
-int main(int argc, char** argv) {
-    glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_RGBA | GLUT_DEPTH | GLUT_DOUBLE);
-    glutCreateWindow(argv[0]);
-    glutInitWindowSize(300, 300);
+int main(int, char** argv) {
+    sample::App sampleApp(argv[0], "sample-12-loader", 300, 300);
 
     // objs = Loader::load ("../simple.m3g");
     // objs = Loader::load ("../checker-board.m3g");
-    objs = Loader::load("../kitune-miko.m3g");
+    objs = Loader::load(sampleApp.asset("kitune-miko.m3g").string().c_str());
     // objs = Loader::load ("../mahosyojo-with-sexy-walking.m3g");
 
     for (int i = 0; i < (int)objs.size(); i++) {
@@ -135,18 +115,17 @@ int main(int argc, char** argv) {
     cout << "near = " << near << "\n";
 
     Background* bg = wld->getBackground();
-    if (bg == NULL) {
+    if (bg == nullptr) {
         bg = new Background();
         wld->setBackground(bg);
     }
     bg->setColor(0xff3f7fff);
+    sampleApp.run(display, reshape, keyboard, idle, mouse);
 
-    glutKeyboardFunc(keyboard);
-    glutIdleFunc(idle);
-    glutMouseFunc(mouse);
-    glutDisplayFunc(display);
-    glutReshapeFunc(reshape);
-    glutMainLoop();
+    for (auto* obj : objs) {
+        delete obj;
+    }
+    delete Graphics3D::getInstance();
 
     return 0;
 }

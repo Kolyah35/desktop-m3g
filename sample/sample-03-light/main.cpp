@@ -1,5 +1,5 @@
+#include "sample_app.hpp"
 #include "m3g.hpp"
-#include <GL/glut.h>
 #include <iostream>
 #include <vector>
 #include "data.hpp"
@@ -7,29 +7,20 @@ using namespace std;
 using namespace m3g;
 
 std::vector<Object3D*> objs;
-World* wld = NULL;
-Mesh* mesh = NULL;
-Light* lgh = NULL;
-Texture2D* tex = NULL;
-
-static void draw_string(int x, int y, const char* s) {
-    while (*s) {
-        glWindowPos2i(x += 8, y);
-        glutBitmapCharacter(GLUT_BITMAP_8_BY_13, *s++);
-    }
-}
+World* wld = nullptr;
+Mesh* mesh = nullptr;
+Light* lgh = nullptr;
+Texture2D* tex = nullptr;
 
 static void display(void) {
     Graphics3D* g3d = Graphics3D::getInstance();
     g3d->render(wld);
 
-    draw_string(10, 287, "t : Texture on/off");
-    draw_string(10, 274, "s : Switch to spot light");
-    draw_string(10, 261, "d : Switch to directional light");
-    draw_string(10, 248, "o : Switch to omni light");
-    draw_string(10, 235, "space : change intensity");
-
-    glutSwapBuffers();
+    sample::drawText(10, 14, "t : Texture on/off");
+    sample::drawText(10, 27, "s : Switch to spot light");
+    sample::drawText(10, 40, "d : Switch to directional light");
+    sample::drawText(10, 53, "o : Switch to omni light");
+    sample::drawText(10, 66, "space : change intensity");
 }
 
 static void resize(int w, int h) {
@@ -39,14 +30,7 @@ static void resize(int w, int h) {
     cam->setPerspective(45, w / (float)h, 0.1, 100);
 }
 
-static void quit() {
-    for (int i = 0; i < (int)objs.size(); i++) {
-        delete objs[i];
-    }
-    Graphics3D* g3d = Graphics3D::getInstance();
-    delete g3d;
-    exit(0);
-}
+static void quit() { sample::requestClose(); }
 
 static int t = 0;
 
@@ -68,13 +52,13 @@ static void keyboard(unsigned char key, int x, int y) {
         }
         case 'd': {
             lgh->setMode(Light::DIRECTIONAL);
-            cout << "Swith to OMNI light.\n";
+            cout << "Switch to DIRECTIONAL light.\n";
             break;
         }
         case 't': {
             Appearance* app = mesh->getAppearance(0);
             if (app->getTexture(0)) {
-                app->setTexture(0, NULL);
+                app->setTexture(0, nullptr);
                 cout << "Texture off.\n";
             } else {
                 app->setTexture(0, tex);
@@ -89,14 +73,10 @@ static void keyboard(unsigned char key, int x, int y) {
             break;
         default: break;
     }
-    glutPostRedisplay();
 }
 
-int main(int argc, char** argv) {
-    glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_RGBA | GLUT_DEPTH | GLUT_DOUBLE);
-    glutCreateWindow(argv[0]);
-    glutInitWindowSize(300, 300);
+int main(int, char** argv) {
+    sample::App sampleApp(argv[0], "sample-03-light", 300, 300);
 
     AnimationController* ctrl = new AnimationController();
 
@@ -138,7 +118,7 @@ int main(int argc, char** argv) {
     Appearance* app = new Appearance();
     app->setMaterial(mat);
 
-    Image2D* img = dynamic_cast<Image2D*>(Loader::load("../kingyo.png")[0]);
+    Image2D* img = dynamic_cast<Image2D*>(Loader::load(sampleApp.asset("kingyo.png").string().c_str())[0]);
     tex = new Texture2D(img);
     app->setTexture(0, tex);
 
@@ -181,11 +161,12 @@ int main(int argc, char** argv) {
     objs.push_back(cam);
     objs.push_back(lgh);
     objs.push_back(wld);
+    sampleApp.run(display, resize, keyboard);
 
-    glutKeyboardFunc(keyboard);
-    glutDisplayFunc(display);
-    glutReshapeFunc(resize);
-    glutMainLoop();
+    for (auto* obj : objs) {
+        delete obj;
+    }
+    delete Graphics3D::getInstance();
 
     return 0;
 }

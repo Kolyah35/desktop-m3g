@@ -1,27 +1,18 @@
+#include "sample_app.hpp"
 #include "m3g.hpp"
-#include <GL/glut.h>
 #include <iostream>
 #include <vector>
 using namespace std;
 using namespace m3g;
 
 std::vector<Object3D*> objs;
-World* wld = NULL;
-
-static void draw_string(int x, int y, const char* s) {
-    while (*s) {
-        glWindowPos2i(x += 8, y);
-        glutBitmapCharacter(GLUT_BITMAP_8_BY_13, *s++);
-    }
-}
+World* wld = nullptr;
 
 static void display(void) {
     Graphics3D* g3d = Graphics3D::getInstance();
     g3d->render(wld);
 
-    draw_string(10, 287, "2,4,6,8 : move camera");
-
-    glutSwapBuffers();
+    sample::drawText(10, 14, "2,4,6,8 : move camera");
 }
 
 static void reshape(int width, int height) {
@@ -31,14 +22,7 @@ static void reshape(int width, int height) {
     cam->setPerspective(45, width / (float)height, 0.1, 100);
 }
 
-static void quit() {
-    for (int i = 0; i < (int)objs.size(); i++) {
-        delete objs[i];
-    }
-    Graphics3D* g3d = Graphics3D::getInstance();
-    delete g3d;
-    exit(0);
-}
+static void quit() { sample::requestClose(); }
 
 int world_time = 0;
 
@@ -54,30 +38,26 @@ static void keyboard(unsigned char key, int x, int y) {
             break;
         case '4':
             cam->postRotate(5, 0, 1, 0);
-            wld->align(NULL);
+            wld->align(nullptr);
             break;
         case '6':
             cam->postRotate(-5, 0, 1, 0);
-            wld->align(NULL);
+            wld->align(nullptr);
             break;
         case '8':
             cam->postRotate(5, 1, 0, 0);
-            wld->align(NULL);
+            wld->align(nullptr);
             break;
         case '2':
             cam->postRotate(-5, 1, 0, 0);
-            wld->align(NULL);
+            wld->align(nullptr);
             break;
         default: break;
     }
-    glutPostRedisplay();
 }
 
-int main(int argc, char** argv) {
-    glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_RGBA | GLUT_DEPTH | GLUT_DOUBLE);
-    glutCreateWindow(argv[0]);
-    glutInitWindowSize(300, 300);
+int main(int, char** argv) {
+    sample::App sampleApp(argv[0], "sample-11-align", 300, 300);
 
     Background* bg = new Background();
     bg->setColor(0xff3f3fff);
@@ -147,11 +127,12 @@ int main(int argc, char** argv) {
     objs.push_back(mesh2);
     objs.push_back(mesh3);
     objs.push_back(wld);
+    sampleApp.run(display, reshape, keyboard);
 
-    glutKeyboardFunc(keyboard);
-    glutDisplayFunc(display);
-    glutReshapeFunc(reshape);
-    glutMainLoop();
+    for (auto* obj : objs) {
+        delete obj;
+    }
+    delete Graphics3D::getInstance();
 
     return 0;
 }

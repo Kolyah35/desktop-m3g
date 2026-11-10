@@ -4,7 +4,8 @@
 #include "Vector.hpp"
 #include "Matrix.hpp"
 #include <iostream>
-#include <cmath>
+#define _USE_MATH_DEFINES
+#include <math.h>
 using namespace std;
 using namespace m3g;
 

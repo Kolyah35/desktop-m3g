@@ -1,31 +1,22 @@
+#include "sample_app.hpp"
 #include "m3g.hpp"
-#include <GL/glut.h>
 #include <iostream>
 #include <vector>
 using namespace std;
 using namespace m3g;
 
 std::vector<Object3D*> objs;
-World* wld = NULL;
+World* wld = nullptr;
 float width;
 float height;
-
-static void draw_string(int x, int y, const char* s) {
-    while (*s) {
-        glWindowPos2i(x += 8, y);
-        glutBitmapCharacter(GLUT_BITMAP_8_BY_13, *s++);
-    }
-}
 
 static void display(void) {
     Graphics3D* g3d = Graphics3D::getInstance();
     g3d->render(wld);
 
-    draw_string(10, 287, "8 : move forward");
-    draw_string(10, 274, "2 : move back");
-    draw_string(10, 261, "mouse : pick up");
-
-    glutSwapBuffers();
+    sample::drawText(10, 14, "8 : move forward");
+    sample::drawText(10, 27, "2 : move back");
+    sample::drawText(10, 40, "mouse : pick up");
 }
 
 static void reshape(int w, int h) {
@@ -37,14 +28,7 @@ static void reshape(int w, int h) {
     cam->setPerspective(45, width / height, 1, 100);
 }
 
-static void quit() {
-    for (int i = 0; i < (int)objs.size(); i++) {
-        delete objs[i];
-    }
-    Graphics3D* g3d = Graphics3D::getInstance();
-    delete g3d;
-    exit(0);
-}
+static void quit() { sample::requestClose(); }
 
 static void keyboard(unsigned char key, int x, int y) {
     Camera* cam = wld->getActiveCamera();
@@ -54,10 +38,10 @@ static void keyboard(unsigned char key, int x, int y) {
         case 'q': quit(); break;
         default: break;
     }
-    glutPostRedisplay();
 }
 
 static void mouse(int button, int state, int x, int y) {
+    if (button != 0 || state != 0) return;
     Camera* cam = wld->getActiveCamera();
     RayIntersection ri;
     bool hit = wld->pick(-1, x / width, y / height, cam, &ri);
@@ -67,11 +51,8 @@ static void mouse(int button, int state, int x, int y) {
     //}
 }
 
-int main(int argc, char** argv) {
-    glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_RGBA | GLUT_DEPTH | GLUT_DOUBLE);
-    glutCreateWindow(argv[0]);
-    glutInitWindowSize(300, 300);
+int main(int, char** argv) {
+    sample::App sampleApp(argv[0], "sample-07-sprite", 300, 300);
 
     Camera* cam = new Camera();
     cam->lookAt(0, 0, 5, 0, 0, 0, 0, 1, 0);
@@ -79,7 +60,7 @@ int main(int argc, char** argv) {
     Background* bg = new Background();
     bg->setColor(0xff1f1f7f);
 
-    Image2D* img = dynamic_cast<Image2D*>(Loader::load("../mizugi-small.png")[0]);
+    Image2D* img = dynamic_cast<Image2D*>(Loader::load(sampleApp.asset("mizugi-small.png").string().c_str())[0]);
     int width = img->getWidth();
     int height = img->getHeight();
 
@@ -118,12 +99,12 @@ int main(int argc, char** argv) {
     objs.push_back(app2);
     objs.push_back(spr2);
     objs.push_back(wld);
+    sampleApp.run(display, reshape, keyboard, nullptr, mouse);
 
-    glutKeyboardFunc(keyboard);
-    glutMouseFunc(mouse);
-    glutDisplayFunc(display);
-    glutReshapeFunc(reshape);
-    glutMainLoop();
+    for (auto* obj : objs) {
+        delete obj;
+    }
+    delete Graphics3D::getInstance();
 
     return 0;
 }

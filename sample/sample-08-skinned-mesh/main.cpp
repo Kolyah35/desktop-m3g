@@ -1,28 +1,19 @@
 #include "m3g.hpp"
 #include "data.hpp"
-#include <GL/glut.h>
+#include "sample_app.hpp"
 #include <iostream>
 #include <vector>
 using namespace std;
 using namespace m3g;
 
 std::vector<Object3D*> objs;
-World* wld = NULL;
-
-static void draw_string(int x, int y, const char* s) {
-    while (*s) {
-        glWindowPos2i(x += 8, y);
-        glutBitmapCharacter(GLUT_BITMAP_8_BY_13, *s++);
-    }
-}
+World* wld = nullptr;
 
 static void display(void) {
     Graphics3D* g3d = Graphics3D::getInstance();
     g3d->render(wld);
 
-    draw_string(10, 287, "space : shake hand");
-
-    glutSwapBuffers();
+    sample::drawText(10, 14, "space : shake hand");
 }
 
 static void reshape(int w, int h) {
@@ -30,17 +21,9 @@ static void reshape(int w, int h) {
     g3d->setViewport(0, 0, w, h);
     Camera* cam = wld->getActiveCamera();
     cam->setPerspective(45, w / (float)h, 0.1, 100);
-    glutPostRedisplay();
 }
 
-static void quit() {
-    for (int i = 0; i < (int)objs.size(); i++) {
-        delete objs[i];
-    }
-    Graphics3D* g3d = Graphics3D::getInstance();
-    delete g3d;
-    exit(0);
-}
+static void quit() { sample::requestClose(); }
 
 int world_time = 0;
 
@@ -53,14 +36,10 @@ static void keyboard(unsigned char key, int x, int y) {
             world_time += 5;
         default: break;
     }
-    glutPostRedisplay();
 }
 
-int main(int argc, char** argv) {
-    glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_RGBA | GLUT_DEPTH | GLUT_DOUBLE);
-    glutCreateWindow(argv[0]);
-    glutInitWindowSize(300, 300);
+int main(int, char** argv) {
+    sample::App sampleApp(argv[0], "sample-08-skinned-mesh", 300, 300);
 
     //       x,y,z, w                 or angle, axis(x,y,z)
     // q0 = [ 0,0,0.382683, 0.92388    or 45 ,0,0,1 ]
@@ -145,11 +124,12 @@ int main(int argc, char** argv) {
     objs.push_back(mesh);
     objs.push_back(cam);
     objs.push_back(wld);
+    sampleApp.run(display, reshape, keyboard);
 
-    glutKeyboardFunc(keyboard);
-    glutDisplayFunc(display);
-    glutReshapeFunc(reshape);
-    glutMainLoop();
+    for (auto* obj : objs) {
+        delete obj;
+    }
+    delete Graphics3D::getInstance();
 
     return 0;
 }

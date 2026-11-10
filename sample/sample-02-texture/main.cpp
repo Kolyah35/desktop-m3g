@@ -1,5 +1,5 @@
+#include "sample_app.hpp"
 #include "m3g.hpp"
-#include <GL/glut.h>
 #include <iostream>
 #include <cstring>
 #include <cmath>
@@ -9,12 +9,11 @@ using namespace std;
 using namespace m3g;
 
 std::vector<Object3D*> objs;
-World* wld = NULL;
+World* wld = nullptr;
 
 static void display(void) {
     Graphics3D* g3d = Graphics3D::getInstance();
     g3d->render(wld);
-    glutSwapBuffers();
 }
 
 static void resize(int width, int height) {
@@ -24,28 +23,17 @@ static void resize(int width, int height) {
     cam->setPerspective(45, width / (float)height, 0.1, 100);
 }
 
-static void quit() {
-    for (int i = 0; i < (int)objs.size(); i++) {
-        delete objs[i];
-    }
-    Graphics3D* g3d = Graphics3D::getInstance();
-    delete g3d;
-    exit(0);
-}
+static void quit() { sample::requestClose(); }
 
 static void keyboard(unsigned char key, int x, int y) {
     switch (key) {
         case 'q': quit(); break;
         default: break;
     }
-    glutPostRedisplay();
 }
 
-int main(int argc, char** argv) {
-    glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_RGB | GLUT_DEPTH | GLUT_DOUBLE);
-    glutCreateWindow(argv[0]);
-    glutInitWindowSize(300, 300);
+int main(int, char** argv) {
+    sample::App sampleApp(argv[0], "sample-02-texture", 300, 300);
 
     VertexArray* positions = new VertexArray(4, 3, 2);
     short position_values[] = {1, -1, 0, 1, 1, 0, -1, -1, 0, -1, 1, 0};
@@ -66,10 +54,10 @@ int main(int argc, char** argv) {
     int strips[] = {3, 3};
     TriangleStripArray* tris = new TriangleStripArray(6, indices, 2, strips);
 
-    Image2D* img0 = dynamic_cast<Image2D*>(Loader::load("../yumemi.png")[0]);
+    Image2D* img0 = dynamic_cast<Image2D*>(Loader::load(sampleApp.asset("yumemi.png").string().c_str())[0]);
     Texture2D* tex0 = new Texture2D(img0);
 
-    Image2D* img1 = dynamic_cast<Image2D*>(Loader::load("../onnanoko.png")[0]);
+    Image2D* img1 = dynamic_cast<Image2D*>(Loader::load(sampleApp.asset("onnanoko.png").string().c_str())[0]);
     Texture2D* tex1 = new Texture2D(img1);
     tex1->setBlending(Texture2D::FUNC_DECAL);
 
@@ -102,11 +90,12 @@ int main(int argc, char** argv) {
     objs.push_back(mesh);
     objs.push_back(cam);
     objs.push_back(wld);
+    sampleApp.run(display, resize, keyboard);
 
-    glutKeyboardFunc(keyboard);
-    glutDisplayFunc(display);
-    glutReshapeFunc(resize);
-    glutMainLoop();
+    for (auto* obj : objs) {
+        delete obj;
+    }
+    delete Graphics3D::getInstance();
 
     return 0;
 }

@@ -1,29 +1,20 @@
+#include "sample_app.hpp"
 #include "m3g.hpp"
-#include <GL/glut.h>
 #include <iostream>
 #include <vector>
 using namespace std;
 using namespace m3g;
 
 std::vector<Object3D*> objs;
-World* wld = NULL;
-
-static void draw_string(int x, int y, const char* s) {
-    while (*s) {
-        glWindowPos2i(x += 8, y);
-        glutBitmapCharacter(GLUT_BITMAP_8_BY_13, *s++);
-    }
-}
+World* wld = nullptr;
 
 static void display(void) {
     cout << "display\n";
     Graphics3D* g3d = Graphics3D::getInstance();
     g3d->render(wld);
 
-    draw_string(10, 287, "4 : scroll left");
-    draw_string(10, 274, "6 : scroll right");
-
-    glutSwapBuffers();
+    sample::drawText(10, 14, "4 : scroll left");
+    sample::drawText(10, 27, "6 : scroll right");
 }
 
 static void reshape(int width, int height) {
@@ -36,14 +27,7 @@ static void reshape(int width, int height) {
 
 int crop_x = 0;
 
-static void quit() {
-    for (int i = 0; i < (int)objs.size(); i++) {
-        delete objs[i];
-    }
-    Graphics3D* g3d = Graphics3D::getInstance();
-    delete g3d;
-    exit(0);
-}
+static void quit() { sample::requestClose(); }
 
 static void keyboard(unsigned char key, int x, int y) {
     Background* bg = wld->getBackground();
@@ -62,14 +46,10 @@ static void keyboard(unsigned char key, int x, int y) {
             break;
         default: break;
     }
-    glutPostRedisplay();
 }
 
-int main(int argc, char** argv) {
-    glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_RGBA | GLUT_DEPTH | GLUT_DOUBLE);
-    glutCreateWindow(argv[0]);
-    glutInitWindowSize(512, 512);
+int main(int, char** argv) {
+    sample::App sampleApp(argv[0], "sample-13-background", 512, 512);
 
     VertexArray* positions = new VertexArray(4, 3, 2);
     short positions_value[] = {1, -1, 0, 1, 1, 0, -1, -1, 0, -1, 1, 0};
@@ -100,7 +80,7 @@ int main(int argc, char** argv) {
     wld->setActiveCamera(cam);
     wld->addChild(mesh);
 
-    Image2D* img = dynamic_cast<Image2D*>(Loader::load("../music-is.png")[0]);
+    Image2D* img = dynamic_cast<Image2D*>(Loader::load(sampleApp.asset("music-is.png").string().c_str())[0]);
     Background* bg = new Background();
     bg->setColor(0xff3f8f1f);
     bg->setImage(img);
@@ -120,11 +100,12 @@ int main(int argc, char** argv) {
     objs.push_back(wld);
     objs.push_back(img);
     objs.push_back(bg);
+    sampleApp.run(display, reshape, keyboard);
 
-    glutKeyboardFunc(keyboard);
-    glutDisplayFunc(display);
-    glutReshapeFunc(reshape);
-    glutMainLoop();
+    for (auto* obj : objs) {
+        delete obj;
+    }
+    delete Graphics3D::getInstance();
 
     return 0;
 }
