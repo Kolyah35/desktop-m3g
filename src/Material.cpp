@@ -7,6 +7,8 @@
 #include "RenderState.hpp"
 #include <iostream>
 #include <iomanip>
+#include <algorithm>
+
 using namespace std;
 using namespace m3g;
 
@@ -141,37 +143,37 @@ int Material::animate_xxx(int world_time) {
     }
 
     if (is_ambient_color_modefied) {
-        unsigned char r = clamp(0, 1, ambient_rgb[0]) * 255;
-        unsigned char g = clamp(0, 1, ambient_rgb[1]) * 255;
-        unsigned char b = clamp(0, 1, ambient_rgb[2]) * 255;
+        unsigned char r = std::clamp(0.f, 1.f, ambient_rgb[0]) * 255;
+        unsigned char g = std::clamp(0.f, 1.f, ambient_rgb[1]) * 255;
+        unsigned char b = std::clamp(0.f, 1.f, ambient_rgb[2]) * 255;
         // cout << "Material: r,g,b = " << (int)r << ", " << (int)g << ", " << (int)b << "\n";
         ambient_color = (r << 16) | (g << 8) | (b << 0);
     }
     if (is_diffuse_color_modefied) {
-        unsigned char r = clamp(0, 1, diffuse_rgb[0]) * 255;
-        unsigned char g = clamp(0, 1, diffuse_rgb[1]) * 255;
-        unsigned char b = clamp(0, 1, diffuse_rgb[2]) * 255;
+        unsigned char r = std::clamp(0.f, 1.f, diffuse_rgb[0]) * 255;
+        unsigned char g = std::clamp(0.f, 1.f, diffuse_rgb[1]) * 255;
+        unsigned char b = std::clamp(0.f, 1.f, diffuse_rgb[2]) * 255;
         // cout << "Material: r,g,b = " << (int)r << ", " << (int)g << ", " << (int)b << "\n";
         diffuse_color = (diffuse_color & 0xff000000) | (r << 16) | (g << 8) | (b << 0);
     }
     if (is_emissive_color_modefied) {
-        unsigned char r = clamp(0, 1, emissive_rgb[0]) * 255;
-        unsigned char g = clamp(0, 1, emissive_rgb[1]) * 255;
-        unsigned char b = clamp(0, 1, emissive_rgb[2]) * 255;
+        unsigned char r = std::clamp(0.f, 1.f, emissive_rgb[0]) * 255;
+        unsigned char g = std::clamp(0.f, 1.f, emissive_rgb[1]) * 255;
+        unsigned char b = std::clamp(0.f, 1.f, emissive_rgb[2]) * 255;
         // cout << "Material: r,g,b = " << (int)r << ", " << (int)g << ", " << (int)b << "\n";
         emissive_color = (r << 16) | (g << 8) | (b << 0);
     }
     if (is_alpha_modefied) {
-        unsigned char a = clamp(0, 1, alpha) * 255;
+        unsigned char a = std::clamp(0.f, 1.f, alpha) * 255;
         diffuse_color = (diffuse_color & 0x00ffffff) | (a << 24);
     }
     if (is_shininess_modefied) {
-        shininess = clamp(0, 128, new_shininess);
+        shininess = std::clamp(0.f, 128.f, new_shininess);
     }
     if (is_specular_color_modefied) {
-        unsigned char r = clamp(0, 1, specular_rgb[0]) * 255;
-        unsigned char g = clamp(0, 1, specular_rgb[1]) * 255;
-        unsigned char b = clamp(0, 1, specular_rgb[2]) * 255;
+        unsigned char r = std::clamp(0.f, 1.f, specular_rgb[0]) * 255;
+        unsigned char g = std::clamp(0.f, 1.f, specular_rgb[1]) * 255;
+        unsigned char b = std::clamp(0.f, 1.f, specular_rgb[2]) * 255;
         // cout << "Material: r,g,b = " << (int)r << ", " << (int)g << ", " << (int)b << "\n";
         specular_color = (r << 16) | (g << 8) | (b << 0);
     }

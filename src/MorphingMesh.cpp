@@ -9,6 +9,8 @@
 #include "Vector.hpp"
 #include "Exception.hpp"
 #include <iostream>
+#include <algorithm>
+
 using namespace std;
 using namespace m3g;
 
@@ -214,7 +216,7 @@ void MorphingMesh::updateMorphedVertices() {
             int target_color = morph_targets[t]->getDefaultColor();
             morphed_color += morph_weights[t] * (target_color - base_color);
         }
-        morphed_color = clamp(0, 1, morphed_color);
+        morphed_color = std::clamp(0, 1, morphed_color);
         morphed_vertices->setDefaultColor(morphed_color);
     }
 }

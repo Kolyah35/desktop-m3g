@@ -8,6 +8,7 @@
 #include "AnimationController.hpp"
 #include "KeyframeSequence.hpp"
 #include "RenderState.hpp"
+
 using namespace std;
 using namespace m3g;
 
@@ -110,9 +111,9 @@ int Fog ::animate_xxx(int world_time) {
     }
 
     if (is_color_modefied) {
-        unsigned char r = clamp(0, 1, rgb[0]) * 255;
-        unsigned char g = clamp(0, 1, rgb[1]) * 255;
-        unsigned char b = clamp(0, 1, rgb[2]) * 255;
+        unsigned char r = std::clamp(0.f, 1.f, rgb[0]) * 255;
+        unsigned char g = std::clamp(0.f, 1.f, rgb[1]) * 255;
+        unsigned char b = std::clamp(0.f, 1.f, rgb[2]) * 255;
         color = (r << 16) | (g << 8) | (b << 0);
     }
     if (is_density_modefied) {

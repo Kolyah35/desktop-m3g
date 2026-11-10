@@ -3,7 +3,7 @@
 
 #include <iosfwd>
 #include "Object.hpp"
-#include "Vector.hpp"
+#include "math/Vector.hpp"
 
 #include <vector>
 

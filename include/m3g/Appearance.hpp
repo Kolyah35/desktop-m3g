@@ -2,7 +2,6 @@
 #define __M3G_APPEARANCE_HPP__
 
 #include "Object3D.hpp"
-#include "m3gdef.hpp"
 #include <iosfwd>
 #include <vector>
 

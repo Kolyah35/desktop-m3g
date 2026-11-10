@@ -8,6 +8,8 @@
 #include "RenderState.hpp"
 #include <iostream>
 #include <iomanip>
+#include <algorithm>
+
 using namespace std;
 using namespace m3g;
 
@@ -169,13 +171,13 @@ int Background::animate_xxx(int world_time) {
         crop = CropRect(new_crop.x, new_crop.y, new_crop.width, new_crop.height);
     }
     if (is_color_modefied) {
-        unsigned char r = clamp(0, 1, new_color[0]) * 255;
-        unsigned char g = clamp(0, 1, new_color[1]) * 255;
-        unsigned char b = clamp(0, 1, new_color[2]) * 255;
+        unsigned char r = std::clamp(0.f, 1.f, new_color[0]) * 255;
+        unsigned char g = std::clamp(0.f, 1.f, new_color[1]) * 255;
+        unsigned char b = std::clamp(0.f, 1.f, new_color[2]) * 255;
         color = (color & 0xff000000) | (r << 16) | (g << 8) | (b << 0);
     }
     if (is_alpha_modefied) {
-        unsigned char a = clamp(0, 1, new_alpha) * 255;
+        unsigned char a = std::clamp(0.f, 1.f, new_alpha) * 255;
         color = (color & 0x00ffffff) | (a << 24);
     }
 

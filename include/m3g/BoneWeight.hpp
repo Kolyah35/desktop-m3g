@@ -1,7 +1,7 @@
 #ifndef __M3G_BONE_WEIGHT_HPP__
 #define __M3G_BONE_WEIGHT_HPP__
 
-#include "Matrix.hpp"
+#include "math/Matrix.hpp"
 
 namespace m3g {
 

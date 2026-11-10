@@ -1,4 +1,4 @@
-#include "m3g.hpp"
+#include <m3g/m3g.hpp>
 #include "data.hpp"
 #include "sample_app.hpp"
 #include <iostream>

@@ -1,10 +1,7 @@
 #ifndef __M3G_OBJECT3D_HPP__
 #define __M3G_OBJECT3D_HPP__
 
-#include <iosfwd>
 #include <vector>
-#include "m3gdef.hpp"
-#include "m3ginternal.hpp"
 #include "Object.hpp"
 
 namespace m3g {

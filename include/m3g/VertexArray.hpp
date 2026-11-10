@@ -2,7 +2,6 @@
 #define __M3G_VERTEX_ARRAY_HPP__
 
 #include "Object3D.hpp"
-#include "m3ginternal.hpp"
 #include <iosfwd>
 
 namespace m3g {

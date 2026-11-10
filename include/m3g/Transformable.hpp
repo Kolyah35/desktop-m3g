@@ -2,7 +2,7 @@
 #define __M3G_TRANSFORMABLE_HPP__
 
 #include "Object3D.hpp"
-#include "Quaternion.hpp"
+#include "math/Quaternion.hpp"
 #include "Transform.hpp"
 #include <iosfwd>
 

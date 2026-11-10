@@ -9,6 +9,8 @@
 #include "CompositingMode.hpp"
 #include "Exception.hpp"
 #include "RenderState.hpp"
+#include "m3gdef.hpp"
+
 using namespace std;
 using namespace m3g;
 

@@ -1,5 +1,5 @@
 #include "sample_app.hpp"
-#include "m3g.hpp"
+#include <m3g/m3g.hpp>
 #include <iostream>
 #include <cstring>
 #include <cmath>

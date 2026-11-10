@@ -7,6 +7,8 @@
 #include "RenderState.hpp"
 #include <iostream>
 #include <iomanip>
+#include <algorithm>
+
 using namespace std;
 using namespace m3g;
 
@@ -112,19 +114,19 @@ int Light::animate_xxx(int world_time) {
     }
 
     if (is_color_modefied) {
-        unsigned char r = clamp(0, 1, rgb[0]) * 255;
-        unsigned char g = clamp(0, 1, rgb[1]) * 255;
-        unsigned char b = clamp(0, 1, rgb[2]) * 255;
+        unsigned char r = std::clamp(0.f, 1.f, rgb[0]) * 255;
+        unsigned char g = std::clamp(0.f, 1.f, rgb[1]) * 255;
+        unsigned char b = std::clamp(0.f, 1.f, rgb[2]) * 255;
         color = (color & 0xff000000) | (r << 16) | (g << 8) | (b << 0);
     }
     if (is_intensity_modefied) {
         intensity = new_intensity;
     }
     if (is_spot_angle_modefied) {
-        spot.angle = clamp(0, 90, new_spot.angle);
+        spot.angle = std::clamp(0.f, 90.f, new_spot.angle);
     }
     if (is_spot_exponent_modefied) {
-        spot.exponent = clamp(0, 128, new_spot.exponent);
+        spot.exponent = std::clamp(0.f, 128.f, new_spot.exponent);
     }
 
     return 0;

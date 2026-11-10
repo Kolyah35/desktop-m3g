@@ -42,7 +42,7 @@ foreach(sample_name IN LISTS SAMPLE_DIRECTORIES)
 
     add_executable(${sample_name} ${sample_sources})
     target_compile_features(${sample_name} PRIVATE cxx_std_20)
-    target_include_directories(${sample_name} PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/support")
+    target_include_directories(${sample_name} PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/support" "${CMAKE_SOURCE_DIR}/glad/include")
     target_link_libraries(${sample_name} PRIVATE m3g::m3g ${M3G_GLFW_TARGET})
 
     set_target_properties(${sample_name} PROPERTIES

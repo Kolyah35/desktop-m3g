@@ -1,6 +1,7 @@
 #include <iostream>
 #include "AnimationController.hpp"
 #include "Exception.hpp"
+
 using namespace std;
 using namespace m3g;
 

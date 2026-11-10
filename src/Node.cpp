@@ -8,6 +8,9 @@
 #include <iostream>
 #define _USE_MATH_DEFINES
 #include <math.h>
+#include "m3ginternal.hpp"
+#include <algorithm>
+
 using namespace std;
 using namespace m3g;
 
@@ -169,7 +172,7 @@ int Node::animate_xxx(int world_time) {
     }
 
     if (is_alpha_modefied) {
-        alpha_factor = clamp(0, 1, new_alpha);
+        alpha_factor = std::clamp(0.f, 1.f, new_alpha);
     }
     if (is_picking_enable_modefied) {
         picking_enable = new_picking_enable;

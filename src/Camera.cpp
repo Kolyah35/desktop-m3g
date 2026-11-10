@@ -9,6 +9,8 @@
 #include "KeyframeSequence.hpp"
 #include "Exception.hpp"
 #include "RenderState.hpp"
+#include "m3ginternal.hpp"
+
 using namespace std;
 using namespace m3g;
 

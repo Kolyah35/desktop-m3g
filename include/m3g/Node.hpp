@@ -2,7 +2,6 @@
 #define __M3G_NODE_HPP__
 
 #include "Transformable.hpp"
-#include "m3ginternal.hpp"
 #include <iosfwd>
 
 namespace m3g {

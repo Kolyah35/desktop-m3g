@@ -13,7 +13,8 @@ project(desktop_m3g LANGUAGES C CXX)
 # =================================
 option(USE_GL "Build the desktop OpenGL backend" ON)
 option(USE_GL_ES "Build the OpenGL ES 1 backend (legacy)" OFF)
-option(BUILD_SAMPLES "Build the GLFW samples" ON)
+option(M3G_BUILD_SAMPLES "Build the GLFW samples" ${PROJECT_IS_TOP_LEVEL})
+option(M3G_BUILD_TESTS "Build tests" OFF)
 option(M3G_BUILD_SHARED "Build M3G as a shared library" OFF)
 option(M3G_FETCH_ZLIB "Fetch zlib if no system installation is found" ON)
 
@@ -22,30 +23,10 @@ if(USE_GL AND USE_GL_ES)
 elseif(NOT USE_GL AND NOT USE_GL_ES)
     message(FATAL_ERROR "Select USE_GL or USE_GL_ES")
 endif()
-if(BUILD_SAMPLES AND NOT USE_GL)
+if(M3G_BUILD_SAMPLES AND NOT USE_GL)
     message(FATAL_ERROR "The desktop GLFW samples require USE_GL=ON")
 endif()
 
-# ================================
-# Default Build is "Debug"
-# ================================
-if(NOT CMAKE_BUILD_TYPE)
-    message(STATUS "Build type is not specified, then")
-    message(STATUS "  set CMAKE_BUILD_TYPE=Debug")
-    set(CMAKE_BUILD_TYPE "Debug")
-endif(NOT CMAKE_BUILD_TYPE)
-message(STATUS "Configuring m3g for ${CMAKE_BUILD_TYPE}...")
-
-# for "Debug"
-if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-    message(STATUS "  set CMAKE_INSTALL_PREFIX=${CMAKE_SOURCE_DIR}/bin")
-    set(CMAKE_INSTALL_PREFIX ${CMAKE_SOURCE_DIR}/bin)
-endif(CMAKE_BUILD_TYPE STREQUAL "Debug")
-
-# for "Release"
-if(CMAKE_BUILD_TYPE STREQUAL "Release")
-    # nothing
-endif(CMAKE_BUILD_TYPE STREQUAL "Release")
 
 # ==================================
 # dependend libraries
@@ -61,7 +42,11 @@ if(NOT ZLIB_FOUND)
     CPMAddPackage("gh:madler/zlib@1.4")
 endif()
 
-CPMAddPackage("gh:unittest-cpp/unittest-cpp@2.0.0")
+if (M3G_BUILD_TESTS)
+    CPMAddPackage("gh:unittest-cpp/unittest-cpp@2.0.0")
+
+    # TODO: add_subdirectory(tests)
+endif()
 
 set(M3G_REQUIRED_LIBRARIES zlibstatic UnitTest++)
 set(M3G_REQUIRED_INCLUDE_DIR ${zlib_SOURCE_DIR} ${CMAKE_SOURCE_DIR}/glad/include "${unittest-cpp_SOURCE_DIR}")
@@ -74,7 +59,7 @@ configure_file(src/Config.hpp.in "${PROJECT_BINARY_DIR}/generated/Config.hpp")
 
 add_subdirectory(src)
 
-if (BUILD_SAMPLES)
+if (M3G_BUILD_SAMPLES)
     add_subdirectory(sample)
 endif()
 
