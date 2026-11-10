@@ -31,15 +31,18 @@ endif()
 # ==================================
 # dependend libraries
 # ==================================
+include(cmake/CPM.cmake)
 
-find_package(ZLIB QUIET)
-if(NOT ZLIB_FOUND)
-    if(NOT M3G_FETCH_ZLIB)
-        message(FATAL_ERROR "zlib not found: install zlib or enable M3G_FETCH_ZLIB")
+if(NOT TARGET ZLIB::ZLIB AND NOT TARGET ZLIB::ZLIBSTATIC)
+    find_package(ZLIB QUIET)
+
+    if(NOT ZLIB_FOUND)
+        if(NOT M3G_FETCH_ZLIB)
+            message(FATAL_ERROR "zlib not found")
+        endif()
+
+        CPMAddPackage("gh:madler/zlib@1.4")
     endif()
-    include(cmake/CPM.cmake)
-
-    CPMAddPackage("gh:madler/zlib@1.4")
 endif()
 
 if (M3G_BUILD_TESTS)

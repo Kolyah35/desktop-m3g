@@ -601,7 +601,7 @@ void LoaderImpl::setAppearance(Appearance* app, const M3GAppearanceStruct& appea
     app->setCompositingMode(cmode);
     app->setPolygonMode(pmode);
     app->setMaterial(mat);
-    app->setFog(fog);
+    if (fog != nullptr) app->setFog(fog);
     for (int i = 0; i < textures_count; i++) {
         Texture2D* tex = resolveReference<Texture2D>(appearance.textures_index[i]);
         app->setTexture(i, tex);

@@ -31,7 +31,14 @@ target_include_directories(m3g
         "${PROJECT_BINARY_DIR}/generated"
         "${PROJECT_SOURCE_DIR}/src"
 )
-target_link_libraries(m3g PUBLIC ZLIB::ZLIB)
+
+if(TARGET ZLIB::ZLIBSTATIC)
+    target_link_libraries(m3g PRIVATE ZLIB::ZLIBSTATIC)
+elseif(TARGET ZLIB::ZLIB)
+    target_link_libraries(m3g PRIVATE ZLIB::ZLIB)
+else()
+    message(FATAL_ERROR "No zlib target available")
+endif()
 
 if(USE_GL)
     target_sources(m3g PRIVATE "${PROJECT_SOURCE_DIR}/glad/src/glad.c")
